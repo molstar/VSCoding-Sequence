@@ -1,0 +1,27 @@
+/**
+ * Copyright (c) 2021 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * @author David Sehnal <david.sehnal@gmail.com>
+ */
+import { StructureElement } from '../../../structure/element';
+export interface ResidueSetEntry {
+    label_asym_id: string;
+    label_comp_id: string;
+    label_seq_id: number;
+    label_alt_id: string;
+    ins_code: string;
+    operator_name?: string;
+}
+export declare class ResidueSet {
+    private index;
+    private checkOperator;
+    add(entry: ResidueSetEntry): boolean;
+    hasLabelAsymId(asym_id: string): boolean;
+    has(loc: StructureElement.Location): ResidueSetEntry | undefined;
+    static getLabel(entry: ResidueSetEntry, checkOperator?: boolean): string;
+    static getEntryFromLocation(loc: StructureElement.Location): ResidueSetEntry;
+    private _find;
+    constructor(options?: {
+        checkOperator?: boolean;
+    });
+}

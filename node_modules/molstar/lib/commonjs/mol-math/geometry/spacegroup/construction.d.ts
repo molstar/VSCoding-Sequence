@@ -1,0 +1,50 @@
+/**
+ * Copyright (c) 2018-2020 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * @author David Sehnal <david.sehnal@gmail.com>
+ * @author Alexander Rose <alexander.rose@weirdbyte.de>
+ */
+import { Vec3, Mat4 } from '../../linear-algebra';
+import { SpacegroupName } from './tables';
+import { SymmetryOperator } from '../../geometry';
+interface SpacegroupCell {
+    /** Index into spacegroup data table */
+    readonly index: number;
+    readonly size: Vec3;
+    readonly volume: number;
+    readonly anglesInRadians: Vec3;
+    /** Transfrom cartesian -> fractional coordinates within the cell */
+    readonly toFractional: Mat4;
+    /** Transfrom fractional coordinates within the cell -> cartesian */
+    readonly fromFractional: Mat4;
+}
+interface Spacegroup {
+    /** Hermann-Mauguin spacegroup name */
+    readonly name: string;
+    /** Spacegroup number from International Tables for Crystallography */
+    readonly num: number;
+    readonly cell: SpacegroupCell;
+    readonly operators: ReadonlyArray<Mat4>;
+}
+declare namespace SpacegroupCell {
+    /** Create a 'P 1' with cellsize [1, 1, 1] */
+    const Zero: SpacegroupCell;
+    /** True if 'P 1' with cellsize [1, 1, 1] */
+    function isZero(cell?: SpacegroupCell): boolean;
+    /** Returns Zero cell if the spacegroup does not exist */
+    function create(nameOrNumber: number | string | SpacegroupName, size: Vec3, anglesInRadians: Vec3): SpacegroupCell;
+}
+declare namespace Spacegroup {
+    /** P1 with [1, 1, 1] cell */
+    const ZeroP1: Spacegroup;
+    function create(cell: SpacegroupCell): Spacegroup;
+    function setOperatorMatrix(spacegroup: Spacegroup, index: number, i: number, j: number, k: number, target: Mat4): Mat4;
+    function getSymmetryOperator(spacegroup: Spacegroup, spgrOp: number, i: number, j: number, k: number): SymmetryOperator;
+    /**
+     * Get Symmetry operator for transformation around the given
+     * reference point `ref` in fractional coordinates
+     */
+    function getSymmetryOperatorRef(spacegroup: Spacegroup, spgrOp: number, i: number, j: number, k: number, ref: Vec3): SymmetryOperator;
+    function getOperatorXyz(op: Mat4): string;
+}
+export { Spacegroup, SpacegroupCell };

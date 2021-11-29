@@ -1,0 +1,66 @@
+/**
+ * Copyright (c) 2017 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * mostly from https://github.com/dsehnal/CIFTools.js
+ * @author David Sehnal <david.sehnal@gmail.com>
+ * @author Alexander Rose <alexander.rose@weirdbyte.de>
+ */
+import { RuntimeContext } from '../../../../mol-task';
+export { Tokenizer };
+interface Tokenizer {
+    data: string;
+    position: number;
+    length: number;
+    lineNumber: number;
+    tokenStart: number;
+    tokenEnd: number;
+}
+export interface Tokens {
+    data: string;
+    count: number;
+    indices: ArrayLike<number>;
+}
+declare function Tokenizer(data: string): Tokenizer;
+declare namespace Tokenizer {
+    function getTokenString(state: Tokenizer): string;
+    /** Resets the state */
+    function reset(state: Tokenizer): void;
+    /**
+     * Eat everything until a newline occurs.
+     */
+    function eatLine(state: Tokenizer): boolean;
+    /** Sets the current token start to the current position */
+    function markStart(state: Tokenizer): void;
+    /** Sets the current token start to current position and moves to the next line. */
+    function markLine(state: Tokenizer): boolean;
+    /** Advance the state and return line as string. */
+    function readLine(state: Tokenizer): string;
+    /** Advance the state and return trimmed line as string. */
+    function readLineTrim(state: Tokenizer): string;
+    /** Advance the state by the given number of lines and return them*/
+    function markLines(state: Tokenizer, count: number): Tokens;
+    /** Advance the state by the given number of lines and return them */
+    function readLines(state: Tokenizer, count: number): string[];
+    /** Advance the state by the given number of lines and return line starts/ends as tokens. */
+    function readLinesAsync(state: Tokenizer, count: number, ctx: RuntimeContext, initialLineCount?: number): Promise<Tokens>;
+    function readAllLines(data: string): Tokens;
+    function readAllLinesAsync(data: string, ctx: RuntimeContext, chunkSize?: number): Promise<Tokens>;
+    /**
+     * Eat everything until a whitespace/newline occurs.
+     */
+    function eatValue(state: Tokenizer): void;
+    /**
+     * Skips all the whitespace - space, tab, newline, CR
+     * Handles incrementing line count.
+     */
+    function skipWhitespace(state: Tokenizer): number;
+    /** Trims spaces and tabs */
+    function trim(state: Tokenizer, start: number, end: number): Tokenizer;
+}
+export declare function trimStr(data: string, start: number, end: number): string;
+export declare namespace TokenBuilder {
+    function add(tokens: Tokens, start: number, end: number): void;
+    function addToken(tokens: Tokens, tokenizer: Tokenizer): void;
+    function addUnchecked(tokens: Tokens, start: number, end: number): void;
+    function create(data: string, size: number): Tokens;
+}

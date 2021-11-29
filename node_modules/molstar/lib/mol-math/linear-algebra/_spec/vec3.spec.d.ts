@@ -1,0 +1,6 @@
+/**
+ * Copyright (c) 2019 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * @author Sebastian Bittrich <sebastian.bittrich@rcsb.org>
+ */
+export {};

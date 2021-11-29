@@ -1,0 +1,10 @@
+/**
+ * Copyright (c) 2017-2020 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * Adapted from https://github.com/rcsb/mmtf-javascript
+ * @author Alexander Rose <alexander.rose@weirdbyte.de>
+ * @author David Sehnal <david.sehnal@gmail.com>
+ */
+export declare function utf8Write(data: Uint8Array, offset: number, str: string): void;
+export declare function utf8Read(data: Uint8Array, offset: number, length: number): string;
+export declare function utf8ByteCount(str: string): number;

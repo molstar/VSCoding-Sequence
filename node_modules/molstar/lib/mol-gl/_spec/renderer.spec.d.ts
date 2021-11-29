@@ -1,0 +1,12 @@
+/**
+ * Copyright (c) 2018-2021 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * @author Alexander Rose <alexander.rose@weirdbyte.de>
+ */
+import { Camera } from '../../mol-canvas3d/camera';
+import { Renderer } from '../renderer';
+export declare function createRenderer(gl: WebGLRenderingContext): {
+    ctx: import("../webgl/context").WebGLContext;
+    camera: Camera;
+    renderer: Renderer;
+};

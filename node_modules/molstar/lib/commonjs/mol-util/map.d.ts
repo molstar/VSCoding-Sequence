@@ -1,0 +1,11 @@
+/**
+ * Copyright (c) 2018 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * @author Alexander Rose <alexander.rose@weirdbyte.de>
+ */
+export interface DefaultMap<K, V> extends Map<K, V> {
+    /** Return the value for `key` when available or the default value otherwise. */
+    getDefault: (key: K) => V;
+}
+/** A `Map` instance with a `getDefault` method added. */
+export declare function DefaultMap<K, V>(valueCtor: () => V): DefaultMap<K, V>;

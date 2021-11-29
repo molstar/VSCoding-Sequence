@@ -1,0 +1,41 @@
+/**
+ * Copyright (c) 2018-2020 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * @author David Sehnal <david.sehnal@gmail.com>
+ * @author Alexander Rose <alexander.rose@weirdbyte.de>
+ */
+import { SpacegroupCell, Box3D, Sphere3D } from '../../mol-math/geometry';
+import { Tensor, Mat4 } from '../../mol-math/linear-algebra';
+import { Histogram } from '../../mol-math/histogram';
+/** The basic unit cell that contains the grid data. */
+interface Grid {
+    readonly transform: Grid.Transform;
+    readonly cells: Tensor;
+    readonly stats: Readonly<{
+        min: number;
+        max: number;
+        mean: number;
+        sigma: number;
+    }>;
+}
+declare namespace Grid {
+    const One: Grid;
+    type Transform = {
+        kind: 'spacegroup';
+        cell: SpacegroupCell;
+        fractionalBox: Box3D;
+    } | {
+        kind: 'matrix';
+        matrix: Mat4;
+    };
+    function getGridToCartesianTransform(grid: Grid): Mat4;
+    function areEquivalent(gridA: Grid, gridB: Grid): boolean;
+    function isEmpty(grid: Grid): boolean;
+    function getBoundingSphere(grid: Grid, boundingSphere?: Sphere3D): Sphere3D;
+    /**
+     * Compute histogram with given bin count.
+     * Cached on the Grid object.
+     */
+    function getHistogram(grid: Grid, binCount: number): Histogram;
+}
+export { Grid };

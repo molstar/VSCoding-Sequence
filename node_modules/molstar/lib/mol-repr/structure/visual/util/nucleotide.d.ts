@@ -1,0 +1,19 @@
+/**
+ * Copyright (c) 2018 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * @author Alexander Rose <alexander.rose@weirdbyte.de>
+ */
+import { Loci } from '../../../../mol-model/loci';
+import { Interval } from '../../../../mol-data/int';
+import { LocationIterator } from '../../../../mol-geo/util/location-iterator';
+import { PickingId } from '../../../../mol-geo/geometry/picking';
+import { StructureGroup } from './common';
+export declare namespace NucleotideLocationIterator {
+    function fromGroup(structureGroup: StructureGroup): LocationIterator;
+}
+export declare function getNucleotideElementLoci(pickingId: PickingId, structureGroup: StructureGroup, id: number): Loci;
+/**
+ * Mark a nucleotide element (e.g. part of a cartoon block)
+ * - mark only when all its residue's elements are in a loci
+ */
+export declare function eachNucleotideElement(loci: Loci, structureGroup: StructureGroup, apply: (interval: Interval) => boolean): boolean;

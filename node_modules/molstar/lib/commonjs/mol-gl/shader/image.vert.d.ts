@@ -1,0 +1,6 @@
+/**
+ * Copyright (c) 2020 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * @author Alexander Rose <alexander.rose@weirdbyte.de>
+ */
+export declare const image_vert = "\nprecision highp float;\nprecision highp int;\n\n#include common\n#include common_vert_params\n\nattribute vec3 aPosition;\nattribute vec2 aUv;\nattribute mat4 aTransform;\nattribute float aInstance;\n\nvarying vec2 vUv;\nvarying float vInstance;\n\nvoid main() {\n    #include assign_position\n\n    vUv = aUv;\n    vInstance = aInstance;\n}\n";

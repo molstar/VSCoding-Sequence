@@ -1,0 +1,69 @@
+/**
+ * Copyright (c) 2017-2021 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * @author David Sehnal <david.sehnal@gmail.com>
+ * @author Alexander Rose <alexander.rose@weirdbyte.de>
+ */
+import { Unit, StructureElement } from '../../structure';
+import { Structure } from '../structure';
+import { BondType } from '../../model/types';
+import { Iterator } from '../../../../mol-data/int';
+import { Sphere3D } from '../../../../mol-math/geometry';
+export * from './bonds/data';
+export * from './bonds/intra-compute';
+export * from './bonds/inter-compute';
+declare namespace Bond {
+    interface Location<U extends Unit = Unit> {
+        readonly kind: 'bond-location';
+        aStructure: Structure;
+        aUnit: U;
+        /** Index into aUnit.elements */
+        aIndex: StructureElement.UnitIndex;
+        bStructure: Structure;
+        bUnit: U;
+        /** Index into bUnit.elements */
+        bIndex: StructureElement.UnitIndex;
+    }
+    function Location(aStructure?: Structure, aUnit?: Unit, aIndex?: StructureElement.UnitIndex, bStructure?: Structure, bUnit?: Unit, bIndex?: StructureElement.UnitIndex): Location;
+    function isLocation(x: any): x is Location;
+    function areLocationsEqual(locA: Location, locB: Location): boolean;
+    interface Loci {
+        readonly kind: 'bond-loci';
+        readonly structure: Structure;
+        readonly bonds: ReadonlyArray<Location>;
+    }
+    function Loci(structure: Structure, bonds: ArrayLike<Location>): Loci;
+    function isLoci(x: any): x is Loci;
+    function areLociEqual(a: Loci, b: Loci): boolean;
+    function isLociEmpty(loci: Loci): boolean;
+    function remapLoci(loci: Loci, structure: Structure): Loci;
+    function toStructureElementLoci(loci: Loci): StructureElement.Loci;
+    function toFirstStructureElementLoci(loci: Loci): StructureElement.Loci;
+    function getType(structure: Structure, location: Location<Unit.Atomic>): BondType;
+    function getOrder(structure: Structure, location: Location<Unit.Atomic>): number;
+    function getIntraUnitBondCount(structure: Structure): number;
+    interface ElementBondData {
+        otherUnit: Unit.Atomic;
+        otherIndex: StructureElement.UnitIndex;
+        type: BondType;
+        order: number;
+    }
+    class ElementBondIterator implements Iterator<ElementBondData> {
+        private current;
+        private structure;
+        private unit;
+        private index;
+        private interBondIndices;
+        private interBondCount;
+        private interBondIndex;
+        private intraBondEnd;
+        private intraBondIndex;
+        hasNext: boolean;
+        move(): ElementBondData;
+        setElement(structure: Structure, unit: Unit.Atomic, index: StructureElement.UnitIndex): void;
+        private advance;
+        constructor();
+    }
+    function getBoundingSphere(loci: Loci, boundingSphere: Sphere3D): Sphere3D;
+}
+export { Bond };
