@@ -1,0 +1,2 @@
+export declare const VOLUME_SERVER_VERSION = "0.9.5";
+export declare const VOLUME_SERVER_HEADER: string;

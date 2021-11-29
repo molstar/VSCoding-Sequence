@@ -1,0 +1,10 @@
+/**
+ * Copyright (c) 2018-2019 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * @author Alexander Rose <alexander.rose@weirdbyte.de>
+ */
+/**
+ * Create 3d points for a polygon:
+ * 3 for a triangle, 4 for a rectangle, 5 for a pentagon, 6 for a hexagon...
+ */
+export declare function polygon(sideCount: number, shift: boolean, radius?: number): Float32Array;

@@ -1,0 +1,10 @@
+/**
+ * Copyright (c) 2020 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * @author David Sehnal <david.sehnal@gmail.com>
+ */
+import { WebGLContext } from '../../../mol-gl/webgl/context';
+import { RuntimeContext } from '../../../mol-task';
+import { AlphaOrbital, CubeGridInfo } from '../data-model';
+export declare function gpuComputeAlphaOrbitalsGridValues(ctx: RuntimeContext, webgl: WebGLContext, grid: CubeGridInfo, orbital: AlphaOrbital): Promise<Float32Array>;
+export declare function gpuComputeAlphaOrbitalsDensityGridValues(ctx: RuntimeContext, webgl: WebGLContext, grid: CubeGridInfo, orbitals: AlphaOrbital[]): Promise<Float32Array>;

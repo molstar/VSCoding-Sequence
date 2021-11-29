@@ -1,0 +1,24 @@
+/**
+ * Copyright (c) 2020 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * @author David Sehnal <david.sehnal@gmail.com>
+ */
+import { Viewport } from '../../mol-canvas3d/camera/util';
+import { ImagePass } from '../../mol-canvas3d/passes/image';
+import { PluginStateAnimation } from '../../mol-plugin-state/animation/model';
+import { PluginContext } from '../../mol-plugin/context';
+import { RuntimeContext } from '../../mol-task';
+import { Color } from '../../mol-util/color';
+export interface Mp4EncoderParams<A extends PluginStateAnimation = PluginStateAnimation> {
+    pass: ImagePass;
+    customBackground?: Color;
+    animation: PluginStateAnimation.Instance<A>;
+    width: number;
+    height: number;
+    viewport: Viewport;
+    /** default is 30 */
+    fps?: number;
+    /** Number from 10 (best quality, slowest) to 51 (worst, fastest) */
+    quantizationParameter?: number;
+}
+export declare function encodeMp4Animation<A extends PluginStateAnimation>(plugin: PluginContext, ctx: RuntimeContext, params: Mp4EncoderParams<A>): Promise<Uint8Array>;

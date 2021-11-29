@@ -1,0 +1,22 @@
+/**
+ * Adapter from https://github.com/mafintosh/tar-stream
+ * Copyright (c) 2014 Mathias Buus, MIT License (MIT)
+ */
+/// <reference types="node" />
+export interface Headers {
+    name: string;
+    mode?: number;
+    uid?: number;
+    gid?: number;
+    size?: number;
+    mtime?: Date;
+    linkname?: string | null;
+    type?: 'file' | 'link' | 'symlink' | 'character-device' | 'block-device' | 'directory' | 'fifo' | 'contiguous-file' | 'pax-header' | 'pax-global-header' | 'gnu-long-link-path' | 'gnu-long-path' | null;
+    uname?: string;
+    gname?: string;
+    devmajor?: number;
+    devminor?: number;
+    typeflag?: number;
+}
+export declare const END_OF_TAR: Buffer;
+export declare function encodeTarHeader(opts: Headers): Buffer | null;

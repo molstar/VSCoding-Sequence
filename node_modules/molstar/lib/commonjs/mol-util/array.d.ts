@@ -1,0 +1,37 @@
+/**
+ * Copyright (c) 2018-2021 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * @author Alexander Rose <alexander.rose@weirdbyte.de>
+ */
+import { NumberArray } from './type-helpers';
+/** Get the maximum value in an array */
+export declare function arrayMax(array: ArrayLike<number>): number;
+/** Get the minimum value in an array */
+export declare function arrayMin(array: ArrayLike<number>): number;
+/** Get the minimum & maximum value in an array */
+export declare function arrayMinMax(array: ArrayLike<number>): number[];
+/** Get the sum of values in an array */
+export declare function arraySum(array: ArrayLike<number>, stride?: number, offset?: number): number;
+/** Get the mean of values in an array */
+export declare function arrayMean(array: ArrayLike<number>, stride?: number, offset?: number): number;
+/** Get the root mean square of values in an array */
+export declare function arrayRms(array: ArrayLike<number>): number;
+/** Fill an array with serial numbers starting from 0 until n - 1 (defaults to array.length) */
+export declare function fillSerial<T extends NumberArray>(array: T, n?: number): T;
+export declare function arrayRemoveInPlace<T>(xs: T[], x: T): boolean;
+export declare function arrayRemoveAtInPlace<T>(xs: T[], idx: number): void;
+export declare function arraySetAdd<T>(xs: T[], x: T): boolean;
+export declare function arraySetRemove<T>(xs: T[], x: T): boolean;
+/**
+ * Caution, O(n^2) complexity. Only use for small input sizes.
+ * For larger inputs consider using `SortedArray`.
+ */
+export declare function arrayAreIntersecting<T>(xs: T[], ys: T[]): boolean;
+/**
+ * Caution, O(n^2) complexity. Only use for small input sizes.
+ * For larger inputs consider using `SortedArray`.
+ */
+export declare function arrayIntersectionSize<T>(xs: T[], ys: T[]): number;
+export declare function arrayEqual<T>(xs?: ArrayLike<T>, ys?: ArrayLike<T>): boolean;
+export declare function arrayIsIdentity(xs: ArrayLike<number>): boolean;
+export declare function arrayMapUpsert<T>(xs: [string, T][], key: string, value: T): void;

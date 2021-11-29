@@ -1,0 +1,22 @@
+/**
+ * Copyright (c) 2018-2020 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * @author David Sehnal <david.sehnal@gmail.com>
+ */
+import { QueryName, QueryParams, Encoding } from './api';
+export interface MultipleQueryEntry<Name extends QueryName = QueryName> {
+    data_source?: string;
+    entryId: string;
+    query: Name;
+    params?: QueryParams<Name>;
+    model_nums?: number[];
+    copy_all_categories?: boolean;
+}
+export interface MultipleQuerySpec {
+    queries: MultipleQueryEntry[];
+    encoding?: Encoding;
+    asTarGz?: boolean;
+    download?: boolean;
+    filename?: string;
+}
+export declare function getMultiQuerySpecFilename(): string;

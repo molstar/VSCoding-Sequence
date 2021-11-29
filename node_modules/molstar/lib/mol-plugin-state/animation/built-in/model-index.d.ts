@@ -1,0 +1,25 @@
+/**
+ * Copyright (c) 2019 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * @author David Sehnal <david.sehnal@gmail.com>
+ */
+import { ParamDefinition as PD } from '../../../mol-util/param-definition';
+import { PluginStateAnimation } from '../model';
+export declare const AnimateModelIndex: PluginStateAnimation<{
+    mode: PD.NamedParams<PD.Normalize<{
+        direction: any;
+    }>, "loop"> | PD.NamedParams<PD.Normalize<unknown>, "palindrome"> | PD.NamedParams<PD.Normalize<{
+        direction: any;
+    }>, "once">;
+    duration: PD.NamedParams<PD.Normalize<{
+        durationInS: any;
+    }>, "fixed"> | PD.NamedParams<PD.Normalize<{
+        maxFps: any;
+    }>, "sequential"> | PD.NamedParams<PD.Normalize<{
+        targetFps: any;
+    }>, "computed">;
+}, {
+    palindromeDirections?: {
+        [id: string]: 1 | -1 | undefined;
+    } | undefined;
+}>;

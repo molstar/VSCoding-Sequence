@@ -1,0 +1,63 @@
+/**
+ * Copyright (c) 2018 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * @author David Sehnal <david.sehnal@gmail.com>
+ */
+import { StateTransformer } from './transformer';
+export { Transform as StateTransform };
+interface Transform<T extends StateTransformer = StateTransformer> {
+    readonly parent: Transform.Ref;
+    readonly transformer: T;
+    readonly state: Transform.State;
+    readonly tags?: string[];
+    readonly ref: Transform.Ref;
+    /**
+     * Sibling-like dependency
+     * Do NOT make a cell dependent on its ancestor.
+     */
+    readonly dependsOn?: Transform.Ref[];
+    readonly params?: StateTransformer.Params<T>;
+    readonly version: string;
+}
+declare namespace Transform {
+    type Ref = string;
+    type Transformer<T extends Transform> = T extends Transform<infer S> ? S : never;
+    const RootRef: string;
+    interface State {
+        isGhost?: boolean;
+        isLocked?: boolean;
+        isHidden?: boolean;
+        isCollapsed?: boolean;
+    }
+    function areStatesEqual(a: State, b: State): boolean;
+    function isStateChange(a: State, b?: Partial<State>): boolean;
+    function assignState(a: State, b?: Partial<State>): boolean;
+    function syncState(a: State, b?: Partial<State>): boolean;
+    interface Options {
+        ref?: string;
+        tags?: string | string[];
+        state?: State;
+        dependsOn?: Ref[];
+    }
+    function create<T extends StateTransformer>(parent: Ref, transformer: T, params?: StateTransformer.Params<T>, options?: Options): Transform<T>;
+    function withParams(t: Transform, params: any): Transform;
+    function withState(t: Transform, state?: Partial<State>): Transform;
+    function withTags(t: Transform, newTags?: string | string[]): Transform;
+    function withParent(t: Transform, parent: Ref): Transform;
+    function createRoot(state?: State): Transform;
+    function hasTag(t: Transform, tag: string): boolean;
+    function hasTags(t: Transform, tags: string | string[]): boolean;
+    interface Serialized {
+        parent: string;
+        transformer: string;
+        params: any;
+        state?: State;
+        tags?: string[];
+        isDecorator?: boolean;
+        ref: string;
+        dependsOn?: string[];
+        version: string;
+    }
+    function toJSON(t: Transform): Serialized;
+    function fromJSON(t: Serialized): Transform;
+}

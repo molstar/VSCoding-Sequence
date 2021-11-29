@@ -1,0 +1,11 @@
+/**
+ * Copyright (c) 2018 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * @author Alexander Rose <alexander.rose@weirdbyte.de>
+ */
+export declare function readFile(file: File, isBinary?: boolean): Promise<string | Uint8Array>;
+export declare function readFileAsText(file: File): Promise<string>;
+export declare function readFileAsBuffer(file: File): Promise<Uint8Array>;
+export declare function readUrl(url: string, isBinary: boolean): Promise<string | Uint8Array>;
+export declare function readUrlAsText(url: string): Promise<string>;
+export declare function readUrlAsBuffer(url: string): Promise<Uint8Array>;

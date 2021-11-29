@@ -1,0 +1,106 @@
+/**
+ * Copyright (c) 2018 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * @author David Sehnal <david.sehnal@gmail.com>
+ */
+import { StateTree } from '../tree/immutable';
+import { TransientTree } from '../tree/transient';
+import { StateObject, StateObjectCell, StateObjectSelector, StateObjectRef } from '../object';
+import { StateTransform } from '../transform';
+import { StateTransformer } from '../transformer';
+import { State } from '../state';
+export { StateBuilder };
+interface StateBuilder {
+    readonly editInfo: StateBuilder.EditInfo;
+    getTree(): StateTree;
+}
+declare namespace StateBuilder {
+    export interface EditInfo {
+        applied: boolean;
+        sourceTree: StateTree;
+        count: number;
+        lastUpdate?: StateTransform.Ref;
+    }
+    interface BuildState {
+        state: State | undefined;
+        tree: TransientTree;
+        editInfo: EditInfo;
+        actions: Action[];
+    }
+    type Action = {
+        kind: 'add';
+        transform: StateTransform;
+    } | {
+        kind: 'update';
+        ref: string;
+        params: any;
+    } | {
+        kind: 'delete';
+        ref: string;
+    } | {
+        kind: 'insert';
+        ref: string;
+        transform: StateTransform;
+    };
+    export function is(obj: any): obj is StateBuilder;
+    export function isTo(obj: any): obj is StateBuilder.To<any>;
+    export class Root implements StateBuilder {
+        private state;
+        get editInfo(): EditInfo;
+        get currentTree(): TransientTree;
+        to<A extends StateObject, T extends StateTransformer>(ref: StateTransform.Ref): To<A, T>;
+        to<A extends StateObject, T extends StateTransformer>(ref: StateObjectRef<A>): To<A, T>;
+        to<C extends StateObjectCell>(cell: C): To<StateObjectCell.Obj<C>, StateObjectCell.Transformer<C>>;
+        to<S extends StateObjectSelector>(selector: S): To<StateObjectSelector.Obj<S>, StateObjectSelector.Transformer<S>>;
+        toRoot<A extends StateObject>(): To<A, StateTransformer<StateObject<any, StateObject.Type<any>>, StateObject<any, StateObject.Type<any>>, any>>;
+        delete(obj: StateObjectRef): this;
+        getTree(): StateTree;
+        commit(options?: Partial<State.UpdateOptions>): Promise<void>;
+        constructor(tree: StateTree, state?: State);
+    }
+    export class To<A extends StateObject, T extends StateTransformer = StateTransformer> implements StateBuilder {
+        private state;
+        private root;
+        get editInfo(): EditInfo;
+        get selector(): StateObjectSelector<A, T>;
+        readonly ref: StateTransform.Ref;
+        private getApplyRoot;
+        /**
+         * Apply the transformed to the parent node
+         * If no params are specified (params <- undefined), default params are lazily resolved.
+         */
+        apply<T extends StateTransformer<A, any, any>>(tr: T, params?: Partial<StateTransformer.Params<T>>, options?: Partial<StateTransform.Options>): To<StateTransformer.To<T>, T>;
+        /**
+         * If the ref is present, the transform is applied.
+         * Otherwise a transform with the specifed ref is created.
+         */
+        applyOrUpdate<T extends StateTransformer<A, any, any>>(ref: StateTransform.Ref, tr: T, params?: Partial<StateTransformer.Params<T>>, options?: Partial<StateTransform.Options>): To<StateTransformer.To<T>, T>;
+        /**
+         * Apply the transformed to the parent node
+         * If no params are specified (params <- undefined), default params are lazily resolved.
+         * The transformer cannot be a decorator to be able to use this.
+         */
+        applyOrUpdateTagged<T extends StateTransformer<A, any, any>>(tags: string | string[], tr: T, params?: Partial<StateTransformer.Params<T>>, options?: Partial<StateTransform.Options>): To<StateTransformer.To<T>, T>;
+        /**
+         * A helper to greate a group-like state object and keep the current type.
+         */
+        group<T extends StateTransformer<A, any, any>>(tr: T, params?: StateTransformer.Params<T>, options?: Partial<StateTransform.Options>): To<A, T>;
+        /**
+         * Inserts a new transform that does not change the object type and move the original children to it.
+         */
+        insert<T extends StateTransformer<A, A, any>>(tr: T, params?: Partial<StateTransformer.Params<T>>, options?: Partial<StateTransform.Options>): To<StateTransformer.To<T>, T>;
+        private updateTagged;
+        update<T extends StateTransformer<any, A, any>>(transformer: T, params: (old: StateTransformer.Params<T>) => Partial<StateTransformer.Params<T>> | void): Root;
+        update(params: Partial<StateTransformer.Params<T>> | ((old: StateTransformer.Params<T>) => Partial<StateTransformer.Params<T>> | void)): Root;
+        to<A extends StateObject, T extends StateTransformer>(ref: StateTransform.Ref): To<A, T>;
+        to<C extends StateObjectCell>(cell: C): To<StateObjectCell.Obj<C>, StateObjectCell.Transformer<C>>;
+        to<S extends StateObjectSelector>(selector: S): To<StateObjectSelector.Obj<S>, StateObjectSelector.Transformer<S>>;
+        toRoot<A extends StateObject>(): To<A, StateTransformer<StateObject<any, StateObject.Type<any>>, StateObject<any, StateObject.Type<any>>, any>>;
+        delete(ref: StateObjectRef): Root;
+        getTree(): StateTree;
+        /** Returns selector to this node. */
+        commit(options?: Partial<State.UpdateOptions>): Promise<StateObjectSelector<A>>;
+        constructor(state: BuildState, ref: StateTransform.Ref, root: Root);
+    }
+    export {};
+}

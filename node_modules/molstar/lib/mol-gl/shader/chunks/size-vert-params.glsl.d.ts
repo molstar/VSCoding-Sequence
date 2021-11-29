@@ -1,0 +1,1 @@
+export declare const size_vert_params = "\n#if defined(dSizeType_uniform)\n    uniform float uSize;\n#elif defined(dSizeType_attribute)\n    attribute float aSize;\n#elif defined(dSizeType_instance) || defined(dSizeType_group) || defined(dSizeType_groupInstance)\n    uniform vec2 uSizeTexDim;\n    uniform sampler2D tSize;\n#endif\n\nuniform float uSizeFactor;\n";

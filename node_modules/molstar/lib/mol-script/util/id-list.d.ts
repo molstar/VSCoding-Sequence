@@ -1,0 +1,7 @@
+/**
+ * Copyright (c) 2021 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * @author David Sehnal <david.sehnal@gmail.com>
+ */
+import { StructureQuery } from '../../mol-model/structure/query';
+export declare function compileIdListSelection(input: string, idType: 'auth' | 'label' | 'atom-id'): StructureQuery;

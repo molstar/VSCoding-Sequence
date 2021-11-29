@@ -1,0 +1,6 @@
+/**
+ * Copyright (c) 2020 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * @author David Sehnal <david.sehnal@gmail.com>
+ */
+export declare const grid3dTemplate_frag = "\nprecision highp float;\nprecision highp int;\nprecision highp sampler2D;\n\nuniform vec2 uQuadShift;\nuniform vec3 uDimensions;\nuniform vec3 uMin;\nuniform vec3 uDelta;\nuniform bool uLittleEndian;\nuniform float uWidth;\n\n#ifdef CUMULATIVE\n    uniform sampler2D tCumulativeSum;\n#endif\n\n{UNIFORMS}\n\n{UTILS}\n\n#include float_to_rgba\n#ifdef CUMULATIVE\n    #include rgba_to_float\n#endif\n\nfloat intDiv(float a, float b) { return float(int(a) / int(b)); }\nfloat intMod(float a, float b) { return a - b * float(int(a) / int(b)); }\n\nvoid main(void) {\n    float offset = floor(gl_FragCoord.x) + floor(gl_FragCoord.y) * uWidth;\n\n    // axis order fast to slow Z, Y, X\n    // TODO: support arbitrary axis orders?\n    float k = intMod(offset, uDimensions.z), kk = intDiv(offset, uDimensions.z);\n    float j = intMod(kk, uDimensions.y);\n    float i = intDiv(kk, uDimensions.y);\n\n    vec3 xyz = uMin + uDelta * vec3(i, j, k);\n\n    {MAIN}\n\n    #ifdef CUMULATIVE\n        float current = rgbaToFloat(texture2D(tCumulativeSum, gl_FragCoord.xy / vec2(uWidth, uWidth)), uLittleEndian);\n    #endif\n    gl_FragColor = floatToRgba({RETURN}, uLittleEndian);\n}\n";
