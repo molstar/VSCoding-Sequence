@@ -2,15 +2,28 @@
   "name": "protein-viewer",
   "displayName": "Protein Viewer",
   "description": "",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "publisher": "ArianJamasb",
+  "author": {
+    "name": "Arian Jamasb"
+  },
+  "icon": "img/logo.png",
   "engines": {
     "vscode": "^1.62.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/a-r-j/vscoding-sequence.git"
+  },
+  "license": "MIT",
   "categories": [
-    "Other"
+    "Other",
+    "Visualization",
+    "Data Science"
   ],
   "activationEvents": [
-    "onCommand:protein-viewer.start"
+    "onCommand:protein-viewer.start",
+    "onCommand:protein-viewer.activateFromFile"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -18,9 +31,20 @@
       {
         "command": "protein-viewer.start",
         "title": "Start Protein Viewer"
+      },
+      {
+        "command": "protein-viewer.activateFromFile",
+        "title": "Launch Protein Viewer from File"
       }
-    ]
-  },
+    ],
+    "menus": {
+      "explorer/context": [{
+          "when": "resourceExtname == .pdb",
+          "command": "protein-viewer.activateFromFile",
+          "group": "navigation"
+      }]
+  }
+},
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
