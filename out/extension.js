@@ -12,7 +12,12 @@ function activate(context) {
             ProteinViewerPanel_1.ProteinViewerPanel.render(context.extensionUri, accession);
         });
     });
+    const activateFromFile = vscode.commands.registerCommand("protein-viewer.activateFromFile", (file_uri) => {
+        ProteinViewerPanel_1.ProteinViewerPanel.renderFromFile(context.extensionUri, file_uri);
+    });
+    //context.subscriptions.push(...[helloCommand, activateFromFile]);
     context.subscriptions.push(helloCommand);
+    context.subscriptions.push(activateFromFile);
 }
 exports.activate = activate;
 // this method is called when your extension is deactivated
