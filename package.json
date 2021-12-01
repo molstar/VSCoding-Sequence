@@ -42,7 +42,7 @@
     "computational biology",
     "chemistry",
     "cheminformatics",
-    "computational chemistry",
+    "computational chemistry"
 	],
   "activationEvents": [
     "onCommand:protein-viewer.start",
