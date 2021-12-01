@@ -19,18 +19,17 @@ class ProteinViewerPanel {
     static render(extensionUri, accession) {
         const windowName = "Protein Viewer - " + accession;
         const panel = vscode.window.createWebviewPanel("proteinviewer", windowName, vscode.ViewColumn.One, {
-            enableScripts: true
+            enableScripts: true,
+            retainContextWhenHidden: true
         });
         ProteinViewerPanel.currentPanel = new ProteinViewerPanel(panel, extensionUri, accession, undefined);
     }
     static renderFromFile(extensionUri, clickedFile) {
-        //if (ProteinViewerPanel.currentPanel) {
-        //  ProteinViewerPanel.currentPanel._panel.reveal(vscode.ViewColumn.One);
-        //} else {
         const fname = clickedFile.path.split('/').pop();
         const windowName = "Protein Viewer - " + fname;
         const panel = vscode.window.createWebviewPanel("proteinviewer", windowName, vscode.ViewColumn.One, {
-            enableScripts: true
+            enableScripts: true,
+            retainContextWhenHidden: true
         });
         ProteinViewerPanel.currentPanel = new ProteinViewerPanel(panel, extensionUri, undefined, clickedFile);
         //}
