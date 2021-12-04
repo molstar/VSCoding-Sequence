@@ -5,15 +5,15 @@ export class ProteinViewerPanel {
   private readonly _panel: vscode.WebviewPanel;
   private _disposables: vscode.Disposable[] = [];
 
-  private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, accession: string | undefined, clickedFile: vscode.Uri | undefined) {
+  private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, accession: string | undefined, clickedFiles: vscode.Uri[] | undefined) {
     this._panel = panel;
     this._panel.onDidDispose(this.dispose, null, this._disposables);
     if (accession != undefined) {
       this._panel.webview.html = this._getWebviewContent(panel.webview, extensionUri, accession);
     };
 
-    if (clickedFile != undefined) {
-      this._panel.webview.html = this._getWebviewContentForFile(panel.webview, extensionUri, clickedFile);
+    if (clickedFiles != undefined) {
+      this._panel.webview.html = this._getWebviewContentForFiles(panel.webview, extensionUri, clickedFiles);
     };
 
   }
@@ -26,18 +26,16 @@ export class ProteinViewerPanel {
     });
 
     ProteinViewerPanel.currentPanel = new ProteinViewerPanel(panel, extensionUri, accession, undefined);
-    }
+  }
 
-  public static renderFromFile(extensionUri: vscode.Uri, clickedFile: vscode.Uri) {
-      const fname = clickedFile.path.split('/').pop();
-      const windowName = "Protein Viewer - " + fname;
-      const panel = vscode.window.createWebviewPanel("proteinviewer", windowName, vscode.ViewColumn.One, {
-        enableScripts: true,
-        retainContextWhenHidden: true
-      });
+  public static renderFromFiles(extensionUri: vscode.Uri, clickedFiles: vscode.Uri[]) {
+    const fnames = clickedFiles.map((clickedFile) => clickedFile.path.split('/').pop());
+    const windowName = "Protein Viewer - " + fnames.join(" - ");
+    const panel = vscode.window.createWebviewPanel("proteinviewer", windowName, vscode.ViewColumn.One, {
+      enableScripts: true
+    });
 
-      ProteinViewerPanel.currentPanel = new ProteinViewerPanel(panel, extensionUri, undefined, clickedFile);
-    //}
+    ProteinViewerPanel.currentPanel = new ProteinViewerPanel(panel, extensionUri, undefined, clickedFiles);
   }
 
   public dispose() {
@@ -102,16 +100,19 @@ export class ProteinViewerPanel {
     `;
   }
 
-  private _getWebviewContentForFile(webview: vscode.Webview, extensionUri: vscode.Uri, clickedFile: vscode.Uri) {
-    //console.log(clickedFile);
-
+  private _getWebviewContentForFiles(webview: vscode.Webview, extensionUri: vscode.Uri, clickedFiles: vscode.Uri[]) {
     const cssUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'node_modules', 'molstar', 'build/viewer', 'molstar.css'));
     const jsUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'node_modules', 'molstar', 'build/viewer', 'molstar.js'));
-    const pdb_contents = webview.asWebviewUri(clickedFile);
-    const extension = clickedFile.path.split('.').pop();
-
-    console.log(pdb_contents);
-    console.log(extension);
+    const pdbContents = clickedFiles.map((clickedFile) => webview.asWebviewUri(clickedFile));
+    const extensions = clickedFiles.map((clickedFile) => clickedFile.path.split('.').pop());
+    let loadCommands: String[] = [];
+    for (let i = 0; i < pdbContents.length; i++) {
+      const pdbContent = pdbContents[i];
+      const extension = extensions[i];
+      loadCommands.push(
+        `viewer.loadStructureFromUrl('${pdbContent}', format='${extension}');`
+      );
+    }
     // Tip: Install the es6-string-html VS Code extension to enable code highlighting below
     return /*html*/ `
     <!DOCTYPE html>
@@ -149,7 +150,7 @@ export class ProteinViewerPanel {
                     pdbProvider: 'rcsb',
                     emdbProvider: 'rcsb',
                 });
-                viewer.loadStructureFromUrl('${pdb_contents}', format='${extension}');
+                ${loadCommands.join("")}
                 // viewer.loadAllModelsOrAssemblyFromUrl('https://cs.litemol.org/5ire/full', 'mmcif', false, { representationParams: { theme: { globalName: 'operator-name' } } })
             </script>
         </body>
