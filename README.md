@@ -20,6 +20,12 @@ Simply call the `Start Protein Viewer command`, enter a PDB accession code & awa
 
 Right-click on the `.pdb` file in the file editor and select `Launch Protein Viewer from File`
 
+### Loading a Local Folder
+
+![Local folder usage gif](img/local_folder.gif)
+
+Right-click on the folder in the file explorer and select `Launch Protein Viewer from Folder`
+
 **Supported Formats**
 
 * `.pdb`
