@@ -28,7 +28,8 @@ class ProteinViewerPanel {
         const fnames = clickedFiles.map((clickedFile) => clickedFile.path.split('/').pop());
         const windowName = "Protein Viewer - " + fnames.join(" - ");
         const panel = vscode.window.createWebviewPanel("proteinviewer", windowName, vscode.ViewColumn.One, {
-            enableScripts: true
+            enableScripts: true,
+            retainContextWhenHidden: true
         });
         ProteinViewerPanel.currentPanel = new ProteinViewerPanel(panel, extensionUri, undefined, clickedFiles);
     }
