@@ -43,10 +43,11 @@
     "chemistry",
     "cheminformatics",
     "computational chemistry"
-	],
+  ],
   "activationEvents": [
     "onCommand:protein-viewer.start",
-    "onCommand:protein-viewer.activateFromFile"
+    "onCommand:protein-viewer.activateFromFile",
+    "onCommand:protein-viewer.activateFromFolder"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -58,16 +59,27 @@
       {
         "command": "protein-viewer.activateFromFile",
         "title": "Launch Protein Viewer from File"
+      },
+      {
+        "command": "protein-viewer.activateFromFolder",
+        "title": "Launch Protein Viewer from Folder"
       }
     ],
     "menus": {
-      "explorer/context": [{
+      "explorer/context": [
+        {
           "when": "resourceExtname == .pdb || resourceExtname == .PDB || resourceExtname == .mol2 || resourceExtname == .MOL2 || resourceExtname == .sdf || resourceExtname == .SDF || resourceExtname == .mmCIF || resourceExtname == .mmcif || resourceExtname == .Mol || resourceExtname == .mol || resourceExtname == .MOL || resourceExtname == .xyz || resourceExtname == .XYZ || resourceExtname == .ent || resourceExtname == .ENT || resourceExtname == .pdbqt || resourceExtname == .PDBQT || resourceExtname == .cif || resourceExtname == .CIF || resourceExtname == .mcif || resourceExtname == .MCIF || resourceExtname == .gro || resourceExtname == .GRO",
           "command": "protein-viewer.activateFromFile",
           "group": "navigation"
-      }]
-  }
-},
+        },
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "protein-viewer.activateFromFolder",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",

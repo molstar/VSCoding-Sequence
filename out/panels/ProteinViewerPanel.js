@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProteinViewerPanel = void 0;
 const vscode = require("vscode");
 class ProteinViewerPanel {
-    constructor(panel, extensionUri, accession, clickedFile) {
+    constructor(panel, extensionUri, accession, clickedFiles) {
         this._disposables = [];
         this._panel = panel;
         this._panel.onDidDispose(this.dispose, null, this._disposables);
@@ -11,8 +11,8 @@ class ProteinViewerPanel {
             this._panel.webview.html = this._getWebviewContent(panel.webview, extensionUri, accession);
         }
         ;
-        if (clickedFile != undefined) {
-            this._panel.webview.html = this._getWebviewContentForFile(panel.webview, extensionUri, clickedFile);
+        if (clickedFiles != undefined) {
+            this._panel.webview.html = this._getWebviewContentForFiles(panel.webview, extensionUri, clickedFiles);
         }
         ;
     }
@@ -24,15 +24,14 @@ class ProteinViewerPanel {
         });
         ProteinViewerPanel.currentPanel = new ProteinViewerPanel(panel, extensionUri, accession, undefined);
     }
-    static renderFromFile(extensionUri, clickedFile) {
-        const fname = clickedFile.path.split('/').pop();
-        const windowName = "Protein Viewer - " + fname;
+    static renderFromFiles(extensionUri, clickedFiles) {
+        const fnames = clickedFiles.map((clickedFile) => clickedFile.path.split('/').pop());
+        const windowName = "Protein Viewer - " + fnames.join(" - ");
         const panel = vscode.window.createWebviewPanel("proteinviewer", windowName, vscode.ViewColumn.One, {
             enableScripts: true,
             retainContextWhenHidden: true
         });
-        ProteinViewerPanel.currentPanel = new ProteinViewerPanel(panel, extensionUri, undefined, clickedFile);
-        //}
+        ProteinViewerPanel.currentPanel = new ProteinViewerPanel(panel, extensionUri, undefined, clickedFiles);
     }
     dispose() {
         ProteinViewerPanel.currentPanel = undefined;
@@ -91,14 +90,20 @@ class ProteinViewerPanel {
     </html>
     `;
     }
-    _getWebviewContentForFile(webview, extensionUri, clickedFile) {
+    _getWebviewContentForFiles(webview, extensionUri, clickedFiles) {
         //console.log(clickedFile);
         const cssUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'node_modules', 'molstar', 'build/viewer', 'molstar.css'));
         const jsUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'node_modules', 'molstar', 'build/viewer', 'molstar.js'));
-        const pdb_contents = webview.asWebviewUri(clickedFile);
-        const extension = clickedFile.path.split('.').pop();
-        console.log(pdb_contents);
-        console.log(extension);
+        const pdbContents = clickedFiles.map((clickedFile) => webview.asWebviewUri(clickedFile));
+        const extensions = clickedFiles.map((clickedFile) => clickedFile.path.split('.').pop());
+        let loadCommands = []
+        for (let i = 0; i < pdbContents.length; i++) {
+            const pdbContent = pdbContents[i];
+            const extension = extensions[i];
+            loadCommands.push(
+                `viewer.loadStructureFromUrl('${pdbContent}', format='${extension}');`
+            );
+        }
         // Tip: Install the es6-string-html VS Code extension to enable code highlighting below
         return /*html*/ `
     <!DOCTYPE html>
@@ -136,7 +141,7 @@ class ProteinViewerPanel {
                     pdbProvider: 'rcsb',
                     emdbProvider: 'rcsb',
                 });
-                viewer.loadStructureFromUrl('${pdb_contents}', format='${extension}');
+                ${loadCommands.join("")}
                 // viewer.loadAllModelsOrAssemblyFromUrl('https://cs.litemol.org/5ire/full', 'mmcif', false, { representationParams: { theme: { globalName: 'operator-name' } } })
             </script>
         </body>
