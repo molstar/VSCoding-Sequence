@@ -2,6 +2,9 @@
 
 All notable changes to the "protein-viewer" extension will be documented in this file.
 
+### 0.0.5
+* Adds ability to launch a viewer from a selection of multiple supported files.
+
 ## 0.0.4
 * Adds support to open folders from explorer
 

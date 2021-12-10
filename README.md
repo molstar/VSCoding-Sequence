@@ -1,32 +1,35 @@
-# VSCoding-Sequence
+# VSCoding-Sequence :dna: :test_tube::microscope:
 
 <img src="img/logo.png" alt="drawing" width="200"/>
 
-VSCoding Sequence allows for visualisation of protein structures in the editor, courtesy of the fantastic [Mol*](https://molstar.org/)
+
+[![Version](https://vsmarketplacebadge.apphb.com/version/ArianJamasb.protein-viewer.svg?color=blue&style=?style=for-the-badge&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=ArianJamasb.protein-viewer)
+[![vscode last updated](https://img.shields.io/visual-studio-marketplace/last-updated/ArianJamasb.protein-viewer)](https://marketplace.visualstudio.com/items?itemName=ArianJamasb.protein-viewer)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+[![vscode downloads](https://img.shields.io/visual-studio-marketplace/i/ArianJamasb.protein-viewer)](https://marketplace.visualstudio.com/items?itemName=ArianJamasb.protein-viewer) [![Downloads](https://vsmarketplacebadge.apphb.com/downloads/ArianJamasb.protein-viewer.svg?color=orange)](https://marketplace.visualstudio.com/items?itemName=ArianJamasb.protein-viewer)
+[![Trending-Weekly](https://vsmarketplacebadge.apphb.com/trending-weekly/ArianJamasb.protein-viewer.svg?logo=tinder&logoColor=white&label=trending%20weekly)](https://marketplace.visualstudio.com/items?itemName=ArianJamasb.protein-viewer) [![Trending-Monthly](https://vsmarketplacebadge.apphb.com/trending-monthly/ArianJamasb.protein-viewer.svg?logo=tinder&logoColor=white&label=monthly)](https://marketplace.visualstudio.com/items?itemName=ArianJamasb.protein-viewer)
 
 
-[Viewer Docs](https://molstar.org/viewer-docs/) | [Mol* Docs](https://molstar.org/docs/)
+VSCoding Sequence allows for visualisation of protein structures and molecular data in the editor, courtesy of the fantastic [Mol*](https://molstar.org/)
 
-## Features
-### Loading a Structure from the PDB
+
+:books: [Viewer Docs](https://molstar.org/viewer-docs/) | [Mol* Docs](https://molstar.org/docs/)
+
+## :package: Features
+### :inbox_tray: Loading a Protein Structure from the [PDB](https://www.rcsb.org/)
 
 ![Usage gif](img/usage.gif)
 
-Simply call the `Start Protein Viewer command`, enter a PDB accession code & away you go!
+Open the command palette (`⌘ + ⇧ + p`) and simply call the `Start Protein Viewer` command, enter a [PDB accession code](https://www.rcsb.org/) & away you go!
 
-### Loading a Local File
+### :spiral_calendar: Loading Local File(s)
 
 ![Local file usage gif](img/local_file.gif)
 
-Right-click on the `.pdb` file in the file editor and select `Launch Protein Viewer from File`
+Right-click on the file or selection of files in the file editor and select `Launch Protein Viewer from File(s)`
 
-### Loading a Local Folder
-
-![Local folder usage gif](img/local_folder.gif)
-
-Right-click on the folder in the file explorer and select `Launch Protein Viewer from Folder`
-
-**Supported Formats**
+**:white_check_mark: Supported Formats**
 
 * `.pdb`
 * `.pdbqt`
@@ -38,9 +41,14 @@ Right-click on the folder in the file explorer and select `Launch Protein Viewer
 * `.mol2`
 * `.sdf`
 
-## Usage
-*The below is taken from the [Mol\* viewer docs](https://molstar.org/viewer-docs/) which is based on the [RCSB PDB mol* documentation](https://www.rcsb.org/3d-view/molstar/help/getting-started) thanks to the generosity of RCSB PDB and Dr. Shuchismita Dutta.*
-### Interface
+### :open_file_folder: Loading a Local Folder
+![Local folder usage gif](img/local_folder.gif)
+
+Right-click on the folder in the file explorer and select `Launch Protein Viewer from Folder`
+
+## :gear: Usage
+*The below is taken from the [Mol\* viewer docs](https://molstar.org/viewer-docs/) which is based on the [RCSB PDB mol* documentation](https://www.rcsb.org/3d-view/molstar/help/getting-started) thanks to the generosity of [RCSB PDB](https://www.rcsb.org/) and Dr. Shuchismita Dutta.*
+### :earth_americas: Interface
 ![Viewer Layout](https://molstar.org/viewer-docs/img/generalinterface3.png)
 
 **3D Canvas**: This is the space where a PDB structure is displayed for manipulation in three dimensions (3D). It is located on the left side of the screen.
@@ -71,7 +79,7 @@ Right-click on the folder in the file explorer and select `Launch Protein Viewer
 
 **Log Panel**: This panel shows various logs containing information about actions taken while viewing the structure. This is located at the bottom of the screen below the 3D Canvas.
 
-### Mouse Controls
+### :mouse: Mouse Controls
 All the interactions with the molecule(s) uploaded in Mol* require using mouse controls (in the 3D canvas). These controls allow the user to manipulate the view of structures via a variety of functions such as rotating, translating, zooming, and clipping the structures. When not specified, a “click” refers to pressing the left mouse button or tapping a single finger on a touchscreen. If an action is available for the right mouse button, it can also be completed by using the Control button + left mouse button. The general mouse controls are listed below:
 
 * **Rotate**: click the left mouse button and move. Alternatively, use the Shift button + left mouse button and drag to rotate the canvas.
@@ -87,14 +95,24 @@ As you interact with the structure using the mouse, Mol* contains two modes for 
 * **Default Mode**: A click on a residue (or any object in 3D) will focus on it. The focused residue and its surroundings (residues and ligands) will be displayed in a ball & stick representation. All local non-covalent interactions will be shown. To hide the surroundings, click on the target residue again.
 * **[Selection Mode](https://molstar.org/viewer-docs/making-selections/#selection-mode)**: A click on a residue (or any object in 3D) will select it. What exactly will be selected depends on the value of the [Picking Level](https://molstar.org/viewer-docs/making-selections/#picking-level). Selected parts of the structure will appear with a bright green tint in the 3D canvas and in the [Sequence Panel](https://molstar.org/viewer-docs/navigating-by-sequence/#sequence-panel). When selecting polymers with the Picking Level set to “residue,” holding the Shift key while clicking will extend the selection along the polymer from the last clicked residue on. Clicking on any point in the 3D canvas that has no atom will clear the selection.
 
-## Community
+## :magnet: Installation
+* The extension can be downloaded/installed from the [VSCode marketplace](https://marketplace.visualstudio.com/items?itemName=ArianJamasb.protein-viewer)
+
+* Altenatively, enter `⌘ + ⇧ + x` in VSCode and search for `Protein Viewer`
+
+
+## :mailbox_with_mail: Community
 ### Support
 Need help? Please [open an issue](https://github.com/a-r-j/vscoding-sequence/issues/new/choose) for support.
 
 ### Discussion
 Find me on twitter: [@arian_jamasb](https://twitter.com/arian_jamasb) or drop me an email: [arian@jamasb.io](mailto:arian@jamasb.io)
 
-## Change log
+## :tornado: Change log
+
+### 0.0.5
+* Adds ability to launch a viewer from a selection of multiple supported files.
+
 
 ### 0.0.4
 * Adds support to open folders from explorer
@@ -125,7 +143,7 @@ Adds support for molecules:
 
 Initial release!
 
-## Reference
+## :books: Reference
 
 If this extension proves useful, you should cite the developers of Mol*
 
