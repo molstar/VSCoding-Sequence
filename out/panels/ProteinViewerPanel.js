@@ -91,18 +91,15 @@ class ProteinViewerPanel {
     `;
     }
     _getWebviewContentForFiles(webview, extensionUri, clickedFiles) {
-        //console.log(clickedFile);
         const cssUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'node_modules', 'molstar', 'build/viewer', 'molstar.css'));
         const jsUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'node_modules', 'molstar', 'build/viewer', 'molstar.js'));
         const pdbContents = clickedFiles.map((clickedFile) => webview.asWebviewUri(clickedFile));
         const extensions = clickedFiles.map((clickedFile) => clickedFile.path.split('.').pop());
-        let loadCommands = []
+        let loadCommands = [];
         for (let i = 0; i < pdbContents.length; i++) {
             const pdbContent = pdbContents[i];
             const extension = extensions[i];
-            loadCommands.push(
-                `viewer.loadStructureFromUrl('${pdbContent}', format='${extension}');`
-            );
+            loadCommands.push(`viewer.loadStructureFromUrl('${pdbContent}', format='${extension}');`);
         }
         // Tip: Install the es6-string-html VS Code extension to enable code highlighting below
         return /*html*/ `

@@ -13,8 +13,10 @@ export function activate(context: vscode.ExtensionContext) {
 		});
 	});
 
-	const activateFromFile = vscode.commands.registerCommand("protein-viewer.activateFromFile", (file_uri: vscode.Uri) => {
-		ProteinViewerPanel.renderFromFiles(context.extensionUri, [file_uri]);
+	const activateFromFiles = vscode.commands.registerCommand("protein-viewer.activateFromFiles", (file_uri: vscode.Uri, selectedFiles: vscode.Uri[]) => {
+		console.log(file_uri);
+		console.log(selectedFiles);
+		ProteinViewerPanel.renderFromFiles(context.extensionUri, selectedFiles);
 	});
 
 	const activateFromFolder = vscode.commands.registerCommand("protein-viewer.activateFromFolder", (folder_uri: vscode.Uri) => {
@@ -25,7 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	//context.subscriptions.push(...[helloCommand, activateFromFile]);
 	context.subscriptions.push(helloCommand);
-	context.subscriptions.push(activateFromFile);
+	context.subscriptions.push(activateFromFiles);
 	context.subscriptions.push(activateFromFolder);
 }
 
