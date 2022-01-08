@@ -109,6 +109,9 @@ Need help? Please [open an issue](https://github.com/a-r-j/vscoding-sequence/iss
 Find me on twitter: [@arian_jamasb](https://twitter.com/arian_jamasb) or drop me an email: [arian@jamasb.io](mailto:arian@jamasb.io)
 
 ## 🌪️ Change log
+
+### 0.0.7
+README Fixes.
 ### 0.0.6
 Fixes README emoji shortcodes
 ### 0.0.5

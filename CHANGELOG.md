@@ -2,8 +2,11 @@
 
 All notable changes to the "protein-viewer" extension will be documented in this file.
 
+### 0.0.7
+README fixes.
+
 ### 0.0.6
-Fixes README emoji shortcodes
+Fixes README emoji shortcodes.
 
 ### 0.0.5
 * Adds ability to launch a viewer from a selection of multiple supported files.
