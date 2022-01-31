@@ -22,7 +22,13 @@ class ProteinViewerPanel {
             enableScripts: true,
             retainContextWhenHidden: true
         });
-        ProteinViewerPanel.currentPanel = new ProteinViewerPanel(panel, extensionUri, accession, undefined);
+        if (accession?.length === 4) {
+            var loadCommand = `viewer.loadPdb('${accession}');`;
+        }
+        else {
+            var loadCommand = `viewer.loadAlphaFoldDb('${accession}');`;
+        }
+        ProteinViewerPanel.currentPanel = new ProteinViewerPanel(panel, extensionUri, loadCommand, undefined);
     }
     static renderFromFiles(extensionUri, clickedFiles) {
         const fnames = clickedFiles.map((clickedFile) => clickedFile.path.split('/').pop());
@@ -54,8 +60,28 @@ class ProteinViewerPanel {
             <meta charset="utf-8" />
             <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
             <link rel="icon" href="./favicon.ico" type="image/x-icon">
-            <title>Embedded Mol* Viewer</title>
+            <title>Mol* Viewer</title>
             <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+                html, body {
+                    width: 100%;
+                    height: 100%;
+                    overflow: hidden;
+                }
+                hr {
+                    margin: 10px;
+                }
+                h1, h2, h3, h4, h5 {
+                    margin-top: 5px;
+                    margin-bottom: 3px;
+                }
+                button {
+                    padding: 2px;
+                }
                 #app {
                     position: absolute;
                     left: 100px;
@@ -70,22 +96,70 @@ class ProteinViewerPanel {
             <div id="app"></div>
             <script type="text/javascript" src="${jsUri}"></script>
             <script type="text/javascript">
-                var viewer = new molstar.Viewer('app', {
-                    layoutIsExpanded: true,
-                    layoutShowControls: true,
-                    layoutShowRemoteState: false,
-                    layoutShowSequence: true,
-                    layoutShowLog: false,
-                    layoutShowLeftPanel: true,
-                    viewportShowExpand: true,
-                    viewportShowSelectionMode: false,
-                    viewportShowAnimation: false,
-                    pdbProvider: 'rcsb',
-                    emdbProvider: 'rcsb',
+                function getParam(name, regex) {
+                    var r = new RegExp(name + '=' + '(' + regex + ')[&]?', 'i');
+                    return decodeURIComponent(((window.location.search || '').match(r) || [])[1] || '');
+                }
+                var debugMode = getParam('debug-mode', '[^&]+').trim() === '1';
+                if (debugMode) molstar.setDebugMode(debugMode, debugMode);
+
+                var hideControls = getParam('hide-controls', '[^&]+').trim() === '1';
+                var collapseLeftPanel = getParam('collapse-left-panel', '[^&]+').trim() === '1';
+                var pdbProvider = getParam('pdb-provider', '[^&]+').trim().toLowerCase();
+                var emdbProvider = getParam('emdb-provider', '[^&]+').trim().toLowerCase();
+                var mapProvider = getParam('map-provider', '[^&]+').trim().toLowerCase();
+                var pixelScale = getParam('pixel-scale', '[^&]+').trim();
+                var pickScale = getParam('pick-scale', '[^&]+').trim();
+                var pickPadding = getParam('pick-padding', '[^&]+').trim();
+                var disableWboit = getParam('disable-wboit', '[^&]+').trim() === '1';
+                var preferWebgl1 = getParam('prefer-webgl1', '[^&]+').trim() === '1' || void 0;
+
+                molstar.Viewer.create('app', {
+                    layoutShowControls: !hideControls,
+                    viewportShowExpand: false,
+                    collapseLeftPanel: collapseLeftPanel,
+                    pdbProvider: pdbProvider || 'pdbe',
+                    emdbProvider: emdbProvider || 'pdbe',
+                    volumeStreamingServer: (mapProvider || 'pdbe') === 'rcsb'
+                        ? 'https://maps.rcsb.org'
+                        : 'https://www.ebi.ac.uk/pdbe/densities',
+                    pixelScale: parseFloat(pixelScale) || 1,
+                    pickScale: parseFloat(pickScale) || 0.25,
+                    pickPadding: isNaN(parseFloat(pickPadding)) ? 1 : parseFloat(pickPadding),
+                    enableWboit: disableWboit ? true : void 0, // use default value if disable-wboit is not set
+                    preferWebgl1: preferWebgl1,
+                }).then(viewer => {
+                    var snapshotId = getParam('snapshot-id', '[^&]+').trim();
+                    if (snapshotId) viewer.setRemoteSnapshot(snapshotId);
+    
+                    var snapshotUrl = getParam('snapshot-url', '[^&]+').trim();
+                    var snapshotUrlType = getParam('snapshot-url-type', '[^&]+').toLowerCase().trim() || 'molj';
+                    if (snapshotUrl && snapshotUrlType) viewer.loadSnapshotFromUrl(snapshotUrl, snapshotUrlType);
+    
+                    var structureUrl = getParam('structure-url', '[^&]+').trim();
+                    var structureUrlFormat = getParam('structure-url-format', '[a-z]+').toLowerCase().trim();
+                    var structureUrlIsBinary = getParam('structure-url-is-binary', '[^&]+').trim() === '1';
+                    if (structureUrl) viewer.loadStructureFromUrl(structureUrl, structureUrlFormat, structureUrlIsBinary);
+    
+                    var pdb = getParam('pdb', '[^&]+').trim();
+                    if (pdb) viewer.loadPdb(pdb);
+    
+                    var pdbDev = getParam('pdb-dev', '[^&]+').trim();
+                    if (pdbDev) viewer.loadPdbDev(pdbDev);
+    
+                    var emdb = getParam('emdb', '[^&]+').trim();
+                    if (emdb) viewer.loadEmdb(emdb);
+    
+                    // var afdb = getParam('afdb', '[^&]+').trim();
+                    // if (afdb) 
+                    // viewer.loadAlphaFoldDb('${accession}');
+                    ${accession};
+    
+                    var modelArchive = getParam('model-archive', '[^&]+').trim();
+                    if (modelArchive) viewer.loadModelArchive(modelArchive);
                 });
-                viewer.loadPdb('${accession}');
-                // viewer.loadAllModelsOrAssemblyFromUrl('https://cs.litemol.org/5ire/full', 'mmcif', false, { representationParams: { theme: { globalName: 'operator-name' } } })
             </script>
+            <!-- __MOLSTAR_ANALYTICS__ -->
         </body>
     </html>
     `;
@@ -109,8 +183,28 @@ class ProteinViewerPanel {
             <meta charset="utf-8" />
             <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
             <link rel="icon" href="./favicon.ico" type="image/x-icon">
-            <title>Embedded Mol* Viewer</title>
+            <title>Mol* Viewer</title>
             <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+                html, body {
+                    width: 100%;
+                    height: 100%;
+                    overflow: hidden;
+                }
+                hr {
+                    margin: 10px;
+                }
+                h1, h2, h3, h4, h5 {
+                    margin-top: 5px;
+                    margin-bottom: 3px;
+                }
+                button {
+                    padding: 2px;
+                }
                 #app {
                     position: absolute;
                     left: 100px;
@@ -125,25 +219,60 @@ class ProteinViewerPanel {
             <div id="app"></div>
             <script type="text/javascript" src="${jsUri}"></script>
             <script type="text/javascript">
-                var viewer = new molstar.Viewer('app', {
-                    layoutIsExpanded: true,
-                    layoutShowControls: true,
-                    layoutShowRemoteState: false,
-                    layoutShowSequence: true,
-                    layoutShowLog: false,
-                    layoutShowLeftPanel: true,
-                    viewportShowExpand: true,
-                    viewportShowSelectionMode: false,
-                    viewportShowAnimation: false,
-                    pdbProvider: 'rcsb',
-                    emdbProvider: 'rcsb',
+                function getParam(name, regex) {
+                    var r = new RegExp(name + '=' + '(' + regex + ')[&]?', 'i');
+                    return decodeURIComponent(((window.location.search || '').match(r) || [])[1] || '');
+                }
+                var debugMode = getParam('debug-mode', '[^&]+').trim() === '1';
+                if (debugMode) molstar.setDebugMode(debugMode, debugMode);
+
+                var hideControls = getParam('hide-controls', '[^&]+').trim() === '1';
+                var collapseLeftPanel = getParam('collapse-left-panel', '[^&]+').trim() === '1';
+                var pdbProvider = getParam('pdb-provider', '[^&]+').trim().toLowerCase();
+                var emdbProvider = getParam('emdb-provider', '[^&]+').trim().toLowerCase();
+                var mapProvider = getParam('map-provider', '[^&]+').trim().toLowerCase();
+                var pixelScale = getParam('pixel-scale', '[^&]+').trim();
+                var pickScale = getParam('pick-scale', '[^&]+').trim();
+                var pickPadding = getParam('pick-padding', '[^&]+').trim();
+                var disableWboit = getParam('disable-wboit', '[^&]+').trim() === '1';
+                var preferWebgl1 = getParam('prefer-webgl1', '[^&]+').trim() === '1' || void 0;
+
+                molstar.Viewer.create('app', {
+                    layoutShowControls: !hideControls,
+                    viewportShowExpand: false,
+                    collapseLeftPanel: collapseLeftPanel,
+                    pdbProvider: pdbProvider || 'pdbe',
+                    emdbProvider: emdbProvider || 'pdbe',
+                    volumeStreamingServer: (mapProvider || 'pdbe') === 'rcsb'
+                        ? 'https://maps.rcsb.org'
+                        : 'https://www.ebi.ac.uk/pdbe/densities',
+                    pixelScale: parseFloat(pixelScale) || 1,
+                    pickScale: parseFloat(pickScale) || 0.25,
+                    pickPadding: isNaN(parseFloat(pickPadding)) ? 1 : parseFloat(pickPadding),
+                    enableWboit: disableWboit ? true : void 0, // use default value if disable-wboit is not set
+                    preferWebgl1: preferWebgl1,
+                }).then(viewer => {
+                    var snapshotId = getParam('snapshot-id', '[^&]+').trim();
+                    if (snapshotId) viewer.setRemoteSnapshot(snapshotId);
+    
+                    var snapshotUrl = getParam('snapshot-url', '[^&]+').trim();
+                    var snapshotUrlType = getParam('snapshot-url-type', '[^&]+').toLowerCase().trim() || 'molj';
+                    if (snapshotUrl && snapshotUrlType) viewer.loadSnapshotFromUrl(snapshotUrl, snapshotUrlType);
+    
+                    var structureUrl = getParam('structure-url', '[^&]+').trim();
+                    var structureUrlFormat = getParam('structure-url-format', '[a-z]+').toLowerCase().trim();
+                    var structureUrlIsBinary = getParam('structure-url-is-binary', '[^&]+').trim() === '1';
+                    if (structureUrl) viewer.loadStructureFromUrl(structureUrl, structureUrlFormat, structureUrlIsBinary);
+
+                    ${loadCommands.join("")}
+
+                    var modelArchive = getParam('model-archive', '[^&]+').trim();
+                    if (modelArchive) viewer.loadModelArchive(modelArchive);
                 });
-                ${loadCommands.join("")}
-                // viewer.loadAllModelsOrAssemblyFromUrl('https://cs.litemol.org/5ire/full', 'mmcif', false, { representationParams: { theme: { globalName: 'operator-name' } } })
             </script>
+            <!-- __MOLSTAR_ANALYTICS__ -->
         </body>
-    </html>
-    `;
+    </html>`;
     }
 }
 exports.ProteinViewerPanel = ProteinViewerPanel;

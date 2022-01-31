@@ -114,9 +114,15 @@ export class Immer implements ProducersFns {
 			return processResult(result, scope)
 		} else if (!base || typeof base !== "object") {
 			result = recipe(base)
-			if (result === NOTHING) return undefined
 			if (result === undefined) result = base
+			if (result === NOTHING) result = undefined
 			if (this.autoFreeze_) freeze(result, true)
+			if (patchListener) {
+				const p: Patch[] = []
+				const ip: Patch[] = []
+				getPlugin("Patches").generateReplacementPatches_(base, result, p, ip)
+				patchListener(p, ip)
+			}
 			return result
 		} else die(21, base)
 	}
@@ -132,11 +138,15 @@ export class Immer implements ProducersFns {
 		}
 
 		let patches: Patch[], inversePatches: Patch[]
-		const nextState = this.produce(arg1, arg2, (p: Patch[], ip: Patch[]) => {
+		const result = this.produce(arg1, arg2, (p: Patch[], ip: Patch[]) => {
 			patches = p
 			inversePatches = ip
 		})
-		return [nextState, patches!, inversePatches!]
+
+		if (typeof Promise !== "undefined" && result instanceof Promise) {
+			return result.then(nextState => [nextState, patches!, inversePatches!])
+		}
+		return [result, patches!, inversePatches!]
 	}
 
 	createDraft<T extends Objectish>(base: T): Draft<T> {

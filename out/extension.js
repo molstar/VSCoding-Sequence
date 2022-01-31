@@ -33,7 +33,7 @@ exports.activate = activate;
 async function showInputBox() {
     const accession = await vscode.window.showInputBox({
         value: '',
-        placeHolder: 'Enter a PDB accession',
+        placeHolder: 'Enter a PDB or AlphaFoldDB (UniProt) accession',
     });
     return accession;
 }

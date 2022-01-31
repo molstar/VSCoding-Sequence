@@ -6,7 +6,7 @@ This rule extends the base [`eslint/padding-line-between-statements`](https://es
 
 **It adds support for TypeScript constructs such as `interface` and `type`.**
 
-## How to use
+## How to Use
 
 ```jsonc
 {
@@ -47,7 +47,11 @@ In addition to options provided by ESLint, `interface` and `type` can be used as
 
 **Note:** ESLint `cjs-export` and `cjs-import` statement types are renamed to `exports` and `require` respectively.
 
-<sup>Taken with ❤️ [from ESLint core](https://github.com/eslint/eslint/blob/master/docs/rules/padding-line-between-statements.md)</sup>
+<sup>
+
+Taken with ❤️ [from ESLint core](https://github.com/eslint/eslint/blob/main/docs/rules/padding-line-between-statements.md)
+
+</sup>
 
 ## Attributes
 

@@ -2,7 +2,6 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { ProteinViewerPanel } from "./panels/ProteinViewerPanel";
-import * as fs from 'fs';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -37,7 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
 async function showInputBox() {
 	const accession = await vscode.window.showInputBox({
 		value: '',
-		placeHolder: 'Enter a PDB accession',
+		placeHolder: 'Enter a PDB or AlphaFoldDB (UniProt) accession',
 	});
 	return accession;
 }

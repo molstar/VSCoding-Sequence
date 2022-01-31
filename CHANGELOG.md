@@ -2,6 +2,9 @@
 
 All notable changes to the "protein-viewer" extension will be documented in this file.
 
+### 0.0.8
+Adds support for Mol* 3.0.2 to enable viewing of AF2 structures.
+
 ### 0.0.7
 README fixes.
 

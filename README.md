@@ -17,11 +17,11 @@ VSCoding Sequence allows for visualisation of protein structures and molecular d
 📚 [Viewer Docs](https://molstar.org/viewer-docs/) | [Mol* Docs](https://molstar.org/docs/)
 
 ## 📦 Features
-### 📥 Loading a Protein Structure from the [PDB](https://www.rcsb.org/)
+### 📥 Loading a Protein Structure from the [PDB](https://www.rcsb.org/) or [AlphaFoldDB](https://alphafold.ebi.ac.uk/)
 
 ![Usage gif](img/usage.gif)
 
-Open the command palette (`⌘ + ⇧ + p`) and simply call the `Start Protein Viewer` command, enter a [PDB accession code](https://www.rcsb.org/) & away you go!
+Open the command palette (`⌘ + ⇧ + p`) and simply call the `Start Protein Viewer` command, enter a [PDB accession code](https://www.rcsb.org/) or (for AlphaFold structures) a UniProt Accession & away you go!
 
 ### 🗓️ Loading Local File(s)
 
@@ -109,6 +109,9 @@ Need help? Please [open an issue](https://github.com/a-r-j/vscoding-sequence/iss
 Find me on twitter: [@arian_jamasb](https://twitter.com/arian_jamasb) or drop me an email: [arian@jamasb.io](mailto:arian@jamasb.io)
 
 ## 🌪️ Change log
+
+### 0.0.8
+Adds support for Mol* 3.0.2 to enable viewing of AF2 structures.
 
 ### 0.0.7
 README Fixes.
