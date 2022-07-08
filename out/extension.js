@@ -22,10 +22,17 @@ function activate(context) {
             ProteinViewerPanel_1.ProteinViewerPanel.renderFromFiles(context.extensionUri, files_uri);
         });
     });
+    const viewCurrentPDB = vscode.commands.registerCommand("protein-viewer.viewCurrentPDB", () => {
+        const activeEditor = vscode.window.activeTextEditor?.document.uri;
+        if (activeEditor) {
+            ProteinViewerPanel_1.ProteinViewerPanel.renderFromFiles(context.extensionUri, [activeEditor]);
+        }
+    });
     //context.subscriptions.push(...[helloCommand, activateFromFile]);
     context.subscriptions.push(helloCommand);
     context.subscriptions.push(activateFromFiles);
     context.subscriptions.push(activateFromFolder);
+    context.subscriptions.push(viewCurrentPDB);
 }
 exports.activate = activate;
 // this method is called when your extension is deactivated
