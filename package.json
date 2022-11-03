@@ -47,7 +47,8 @@
   "activationEvents": [
     "onCommand:protein-viewer.start",
     "onCommand:protein-viewer.activateFromFiles",
-    "onCommand:protein-viewer.activateFromFolder"
+    "onCommand:protein-viewer.activateFromFolder",
+    "onCommand:protein-viewer.ESMFold"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -63,12 +64,16 @@
       {
         "command": "protein-viewer.activateFromFolder",
         "title": "Launch Protein Viewer from Folder"
+      },
+      {
+        "command": "protein-viewer.ESMFold",
+        "title": "ESMFold Sequence"
       }
     ],
     "menus": {
       "explorer/context": [
         {
-          "when": "resourceExtname == .pdb || resourceExtname == .PDB || resourceExtname == .mol2 || resourceExtname == .MOL2 || resourceExtname == .sdf || resourceExtname == .SDF || resourceExtname == .mmCIF || resourceExtname == .mmcif || resourceExtname == .Mol || resourceExtname == .mol || resourceExtname == .MOL || resourceExtname == .xyz || resourceExtname == .XYZ || resourceExtname == .ent || resourceExtname == .ENT || resourceExtname == .pdbqt || resourceExtname == .PDBQT || resourceExtname == .cif || resourceExtname == .CIF || resourceExtname == .mcif || resourceExtname == .MCIF || resourceExtname == .gro || resourceExtname == .GRO",
+          "when": "resourceExtname == .pdb || resourceExtname == .PDB || resourceExtname == .mol2 || resourceExtname == .MOL2 || resourceExtname == .sdf || resourceExtname == .SDF || resourceExtname == .mmCIF || resourceExtname == .mmcif || resourceExtname == .MMCIF || resourceExtname == .Mol || resourceExtname == .mol || resourceExtname == .MOL || resourceExtname == .xyz || resourceExtname == .XYZ || resourceExtname == .ent || resourceExtname == .ENT || resourceExtname == .pdbqt || resourceExtname == .PDBQT || resourceExtname == .cif || resourceExtname == .CIF || resourceExtname == .mcif || resourceExtname == .MCIF || resourceExtname == .gro || resourceExtname == .GRO",
           "command": "protein-viewer.activateFromFiles",
           "group": "navigation"
         },
@@ -102,6 +107,7 @@
     "typescript": "^4.4.4"
   },
   "dependencies": {
-    "molstar": "^3.23.0"
+    "molstar": "^3.23.0",
+    "node-fetch": "^2.6.1"
   }
 }
