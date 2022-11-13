@@ -2,8 +2,9 @@
 
 All notable changes to the "protein-viewer" extension will be documented in this file.
 
-### 0.0.9
+### 0.1.0
 
+Adds support for folding sequences via ESMFold
 Bumps Mol* to 3.23.0
 
 ### 0.0.8

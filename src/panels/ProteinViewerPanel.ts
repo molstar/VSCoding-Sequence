@@ -181,7 +181,12 @@ export class ProteinViewerPanel {
     let loadCommands: String[] = [];
     for (let i = 0; i < pdbContents.length; i++) {
       const pdbContent = pdbContents[i];
-      const extension = extensions[i];
+      var extension = extensions[i];
+      console.log(extension);
+      if (extension === 'cif' || extension === 'mmCIF' || extension === 'CIF' || extension === 'MMCIF' || extension == '.mCIF' || extension == '.mcif') {
+        extension = 'mmcif';
+      }
+      console.log(extension);
       loadCommands.push(
         `viewer.loadStructureFromUrl('${pdbContent}', format='${extension}');`
       );
