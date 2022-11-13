@@ -3,8 +3,9 @@
 import fetch from 'node-fetch';
 import * as vscode from 'vscode';
 import { ProteinViewerPanel } from "./panels/ProteinViewerPanel";
+const path = require('node:path');
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
 
 	const helloCommand = vscode.commands.registerCommand("protein-viewer.start", () => {
 		showInputBox().then((accession) => {
@@ -27,9 +28,15 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const ESMFold = vscode.commands.registerCommand("protein-viewer.ESMFold", () => {
 		showSequenceInputBox().then((sequence) => {
-			console.log(sequence);
-			const file = getfold(sequence);
-			console.log(file);
+			const uri = getfold(sequence).then((pdb) => {
+				writeFoldToFile(pdb).then(
+					async (file_uri) => {
+						console.log(file_uri);
+						ProteinViewerPanel.renderFromFiles(context.extensionUri, [vscode.Uri.file(file_uri)]);
+					}
+				)
+			})
+
 		});
 	});
 	//context.subscriptions.push(...[helloCommand, activateFromFile]);
@@ -58,29 +65,35 @@ async function showSequenceInputBox() {
 	return sequence;
 }
 
+async function writeFoldToFile(file_contents: string) {
+	const time = new Date().getTime();
+	const fname = "/esmfold_" + time.toString() + ".pdb";
+
+	const setting: vscode.Uri = vscode.Uri.parse("untitled:" + vscode.workspace.rootPath + fname);
+	await vscode.workspace.openTextDocument(setting).then((a: vscode.TextDocument) => {
+		vscode.window.showTextDocument(a, 1, false).then(e => {
+			e.edit(edit => {
+				edit.insert(new vscode.Position(0, 0), file_contents);
+				a.save();
+			});
+		});
+	});
+
+	console.log("wrote to test file.");
+	console.log(setting);
+	return setting.fsPath;
+}
+
+
 async function getfold(sequence: string | undefined) {
 	const url = "https://api.esmatlas.com/foldSequence/v1/pdb/";
 
+	console.log(sequence);
 	const response = await fetch(url, {
 		method: 'POST',
 		body: sequence,
-		// headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }
-	});
-	console.log("Output:");
-	console.log(response.text());
-	console.log(response.body);
+	})
 
-	if (!response.ok) { /* Handle */ }
-
-	// If you care about a response:
-	if (response.body !== null) {
-		// body is ReadableStream<Uint8Array>
-		// parse as needed, e.g. reading directly, or
-		// console.log(response.body);
-		const response_string = response.body.toString();// new TextDecoder("utf-8").decode(response.body);
-		// and further:
-		// const asJSON = JSON.parse(asString);  // implicitly 'any', make sure to verify type on runtime.
-		//console.log(response_string);
-		return response_string;
-	}
+	const body = await response.text();
+	return body
 }
