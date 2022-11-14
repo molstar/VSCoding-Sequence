@@ -45,6 +45,12 @@ Right-click on the file or selection of files in the file editor and select `Lau
 
 Right-click on the folder in the file explorer and select `Launch Protein Viewer from Folder`
 
+### ESMFolding a sequence
+
+![ESMfold gif](img/esmfold.gif)
+
+Open the command palette (`⌘ + ⇧ + p`) and call the `ESMFold Sequence` command. Paste your sequence in the textbox and press enter.
+
 ## ⚙️ Usage
 
 *The below is taken from the [Mol\* viewer docs](https://molstar.org/viewer-docs/) which is based on the [RCSB PDB mol* documentation](https://www.rcsb.org/3d-view/molstar/help/getting-started) thanks to the generosity of [RCSB PDB](https://www.rcsb.org/) and Dr. Shuchismita Dutta.*
