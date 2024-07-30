@@ -1,0 +1,69 @@
+#!/usr/bin/env node
+"use strict";
+/**
+ * Copyright (c) 2022 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * @author Alexander Rose <alexander.rose@weirdbyte.de>
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
+const argparse = tslib_1.__importStar(require("argparse"));
+const path = tslib_1.__importStar(require("path"));
+const util_1 = tslib_1.__importDefault(require("util"));
+const fs_1 = tslib_1.__importDefault(require("fs"));
+require('util.promisify').shim();
+const writeFile = util_1.default.promisify(fs_1.default.writeFile);
+const util_2 = require("./util");
+function extractSaccharideNames(ccd) {
+    const saccharideNames = [];
+    for (const k in ccd) {
+        const { chem_comp } = ccd[k];
+        const type = chem_comp.type.value(0).toUpperCase();
+        if (type.includes('SACCHARIDE')) {
+            saccharideNames.push(chem_comp.id.value(0));
+        }
+    }
+    // these are extra saccharides that don't have SACCHARIDE in their type
+    saccharideNames.push('UMQ', // UNDECYL-MALTOSIDE, via GlyFinder
+    'SQD');
+    return saccharideNames;
+}
+function writeSaccharideNamesFile(filePath, ionNames) {
+    const output = `/**
+ * Copyright (c) 2022 mol* contributors, licensed under MIT, See LICENSE file for more info.
+ *
+ * Code-generated ion names params file. Names extracted from CCD components.
+ *
+ * @author molstar/cli/chem-comp-dict/create-saccharides
+ */
+
+export const SaccharideNames = new Set(${JSON.stringify(ionNames).replace(/"/g, "'").replace(/,/g, ', ')});
+`;
+    writeFile(filePath, output);
+}
+async function run(out, options = util_2.DefaultDataOptions) {
+    await (0, util_2.ensureDataAvailable)(options);
+    const ccd = await (0, util_2.readCCD)();
+    const saccharideNames = extractSaccharideNames(ccd);
+    if (!fs_1.default.existsSync(path.dirname(out))) {
+        fs_1.default.mkdirSync(path.dirname(out));
+    }
+    writeSaccharideNamesFile(out, saccharideNames);
+}
+const parser = new argparse.ArgumentParser({
+    add_help: true,
+    description: 'Extract and save SaccharideNames from CCD.'
+});
+parser.add_argument('out', {
+    help: 'Generated file output path.'
+});
+parser.add_argument('--forceDownload', '-f', {
+    action: 'store_true',
+    help: 'Force download of CCD and PVCD.'
+});
+parser.add_argument('--ccdUrl', '-c', {
+    help: 'Fetch the CCD from a custom URL. This forces download of the CCD.',
+    required: false
+});
+const args = parser.parse_args();
+run(args.out, { forceDownload: args.forceDownload, ccdUrl: args.ccdUrl });
