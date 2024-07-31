@@ -26,6 +26,19 @@ export async function activate(context: vscode.ExtensionContext) {
 		});
 	});
 
+	const ActivateFromActiveEditor = vscode.commands.registerCommand("protein-viewer.activateFromActiveEditor", () => {
+		const editor = vscode.window.activeTextEditor;
+		// Get Uri of the active editor
+		const file_uri = editor?.document.uri;
+		if (!file_uri) {
+			vscode.window.showErrorMessage("The active editor could not be rendered in the Protein Viewer.");
+			return;
+		} else {
+			// Show a warning box
+			ProteinViewerPanel.renderFromFiles(context.extensionUri, [file_uri]);
+		};
+	});
+
 	const ESMFold = vscode.commands.registerCommand("protein-viewer.ESMFold", () => {
 		showSequenceInputBox().then((sequence) => {
 			const uri = getfold(sequence).then((pdb) => {
@@ -39,12 +52,14 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		});
 	});
-	//context.subscriptions.push(...[helloCommand, activateFromFile]);
+
 	context.subscriptions.push(helloCommand);
 	context.subscriptions.push(activateFromFiles);
 	context.subscriptions.push(activateFromFolder);
+	context.subscriptions.push(ActivateFromActiveEditor);
 	context.subscriptions.push(ESMFold);
 }
+
 
 // this method is called when your extension is deactivated
 // export function deactivate() {}

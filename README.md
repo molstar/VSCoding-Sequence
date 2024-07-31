@@ -27,6 +27,8 @@ Open the command palette (`⌘ + ⇧ + p`) and simply call the `Start Protein Vi
 
 Right-click on the file or selection of files in the file editor and select `Launch Protein Viewer from File(s)`
 
+Alternatively, while looking at an open file in the editor you can call: `Protein Viewer: View Current File` from the command palette.
+
 **✅ Supported Formats**
 
 * `.pdb`
@@ -115,6 +117,11 @@ Need help? Please [open an issue](https://github.com/a-r-j/vscoding-sequence/iss
 Find me on twitter: [@arian_jamasb](https://twitter.com/arian_jamasb) or drop me an email: [arian@jamasb.io](mailto:arian@jamasb.io)
 
 ## 🌪️ Change log
+
+### 0.1.1
+
+- Bumps Mol* to `4.5.0`
+- Adds `Protein Viewer: View Current File` command.
 
 ### 0.1.0
 
