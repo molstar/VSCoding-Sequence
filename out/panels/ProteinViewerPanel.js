@@ -168,7 +168,7 @@ class ProteinViewerPanel {
         const cssUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'node_modules', 'molstar', 'build/viewer', 'molstar.css'));
         const jsUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'node_modules', 'molstar', 'build/viewer', 'molstar.js'));
         const pdbContents = clickedFiles.map((clickedFile) => webview.asWebviewUri(clickedFile));
-        const extensions = clickedFiles.map((clickedFile) => clickedFile.path.split('.').pop());
+        const extensions = clickedFiles.map((clickedFile) => clickedFile.path.split('.').pop()?.toLocaleLowerCase());
         let loadCommands = [];
         for (let i = 0; i < pdbContents.length; i++) {
             const pdbContent = pdbContents[i];
