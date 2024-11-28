@@ -43,7 +43,7 @@ Right-click on the file or selection of files in the file editor and select `Lau
 
 ![Local folder usage gif](img/local_folder.gif)
 
-Right-click on the folder in the file explorer and select `Launch Protein Viewer from Folder`
+Right-click on the folder in the file explorer and select `Launch Protein Viewer from Folder`.
 
 ## ⚙️ Usage
 
