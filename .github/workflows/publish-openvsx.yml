@@ -4,6 +4,9 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: read
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -24,4 +27,6 @@ jobs:
         run: npx @vscode/vsce package
 
       - name: Publish extension to Open VSX
-        run: npx ovsx publish --packagePath *.vsix -p ${{ secrets.OVSX_PAT }}
+        run: npx ovsx publish --packagePath *.vsix
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
