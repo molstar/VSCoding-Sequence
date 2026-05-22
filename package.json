@@ -48,7 +48,8 @@
     "onCommand:protein-viewer.start",
     "onCommand:protein-viewer.activateFromFiles",
     "onCommand:protein-viewer.activateFromFolder",
-    "onCommand:protein-viewer.ESMFold"
+    "onCommand:protein-viewer.ESMFold",
+    "onUri"
   ],
   "main": "./out/extension.js",
   "contributes": {

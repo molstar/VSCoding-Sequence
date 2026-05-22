@@ -17,7 +17,10 @@ export async function activate(context: vscode.ExtensionContext) {
 	const activateFromFiles = vscode.commands.registerCommand("protein-viewer.activateFromFiles", (file_uri: vscode.Uri, selectedFiles: vscode.Uri[]) => {
 		console.log(file_uri);
 		console.log(selectedFiles);
-		ProteinViewerPanel.renderFromFiles(context.extensionUri, selectedFiles);
+		const filesToOpen = selectedFiles?.length ? selectedFiles : (file_uri ? [file_uri] : []);
+		if (filesToOpen.length > 0) {
+			ProteinViewerPanel.renderFromFiles(context.extensionUri, filesToOpen);
+		}
 	});
 
 	const activateFromFolder = vscode.commands.registerCommand("protein-viewer.activateFromFolder", (folder_uri: vscode.Uri) => {
@@ -39,11 +42,22 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		});
 	});
+	const uriHandler = vscode.window.registerUriHandler({
+		handleUri(uri: vscode.Uri) {
+			const filesToOpen = getFilesFromLaunchUri(uri);
+			if (filesToOpen.length === 0) {
+				vscode.window.showErrorMessage("Protein Viewer: no files were provided in URI. Use ?file=/abs/path/to/file.pdb (repeat file for multiple files).");
+				return;
+			}
+			ProteinViewerPanel.renderFromFiles(context.extensionUri, filesToOpen);
+		}
+	});
 	//context.subscriptions.push(...[helloCommand, activateFromFile]);
 	context.subscriptions.push(helloCommand);
 	context.subscriptions.push(activateFromFiles);
 	context.subscriptions.push(activateFromFolder);
 	context.subscriptions.push(ESMFold);
+	context.subscriptions.push(uriHandler);
 }
 
 // this method is called when your extension is deactivated
@@ -96,4 +110,16 @@ async function getfold(sequence: string | undefined) {
 
 	const body = await response.text();
 	return body
+}
+
+export function getFilesFromLaunchUri(uri: vscode.Uri): vscode.Uri[] {
+	if (uri.path !== "/open") {
+		return [];
+	}
+	const params = new URLSearchParams(uri.query);
+	const files = params.getAll("file")
+		.map(file => file.trim())
+		.filter(file => file.length > 0)
+		.map(file => file.match(/^[a-zA-Z][a-zA-Z0-9+.-]*:/) ? vscode.Uri.parse(file, true) : vscode.Uri.file(file));
+	return files;
 }

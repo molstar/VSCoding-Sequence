@@ -27,6 +27,29 @@ Open the command palette (`⌘ + ⇧ + p`) and simply call the `Start Protein Vi
 
 Right-click on the file or selection of files in the file editor and select `Launch Protein Viewer from File(s)`
 
+You can also launch programmatically (for example from bash or Python) via a VS Code URI:
+
+`vscode://ArianJamasb.protein-viewer/open?file=/absolute/path/to/first.pdb&file=/absolute/path/to/second.cif`
+
+The `file` query parameter can be repeated for multiple files.
+
+Example from bash:
+
+```bash
+xdg-open "vscode://ArianJamasb.protein-viewer/open?file=$(python -c 'import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1]))' /abs/a.pdb)&file=$(python -c 'import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1]))' /abs/b.pdb)"
+```
+
+Example from Python:
+
+```python
+import urllib.parse
+import webbrowser
+
+files = ["/abs/a.pdb", "/abs/b.cif"]
+query = "&".join(f"file={urllib.parse.quote(f)}" for f in files)
+webbrowser.open(f"vscode://ArianJamasb.protein-viewer/open?{query}")
+```
+
 **✅ Supported Formats**
 
 * `.pdb`
