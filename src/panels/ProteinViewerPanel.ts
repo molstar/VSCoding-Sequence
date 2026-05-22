@@ -5,7 +5,7 @@ export class ProteinViewerPanel {
   private readonly _panel: vscode.WebviewPanel;
   private _disposables: vscode.Disposable[] = [];
 
-  private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, accession: string | undefined, clickedFiles: vscode.Uri[] | undefined) {
+  private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, accession: string | undefined, clickedFiles: readonly vscode.Uri[] | undefined) {
     this._panel = panel;
     this._panel.onDidDispose(this.dispose, null, this._disposables);
     if (accession != undefined) {
@@ -34,17 +34,17 @@ export class ProteinViewerPanel {
 
   public static renderFromFiles(extensionUri: vscode.Uri, clickedFiles: readonly vscode.Uri[] | undefined) {
     if (!clickedFiles?.length) {
-      vscode.window.showErrorMessage('No supported file selected to open in Protein Viewer.');
+      vscode.window.showErrorMessage('No file selected to open in Protein Viewer.');
       return;
     }
-    const fnames = clickedFiles.map((clickedFile) => clickedFile.path.split('/').pop());
+    const fnames = clickedFiles.map((clickedFile) => clickedFile.path.split(/[\\/]/).pop());
     const windowName = "Protein Viewer - " + fnames.join(" - ");
     const panel = vscode.window.createWebviewPanel("proteinviewer", windowName, vscode.ViewColumn.One, {
       enableScripts: true,
       retainContextWhenHidden: true
     });
 
-    ProteinViewerPanel.currentPanel = new ProteinViewerPanel(panel, extensionUri, undefined, [...clickedFiles]);
+    ProteinViewerPanel.currentPanel = new ProteinViewerPanel(panel, extensionUri, undefined, clickedFiles);
   }
 
   public dispose() {
@@ -177,7 +177,7 @@ export class ProteinViewerPanel {
     `;
   }
 
-  private _getWebviewContentForFiles(webview: vscode.Webview, extensionUri: vscode.Uri, clickedFiles: vscode.Uri[]) {
+  private _getWebviewContentForFiles(webview: vscode.Webview, extensionUri: vscode.Uri, clickedFiles: readonly vscode.Uri[]) {
     const cssUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'node_modules', 'molstar', 'build/viewer', 'molstar.css'));
     const jsUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'node_modules', 'molstar', 'build/viewer', 'molstar.js'));
     const pdbContents = clickedFiles.map((clickedFile) => webview.asWebviewUri(clickedFile));

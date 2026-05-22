@@ -15,13 +15,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	const activateFromFiles = vscode.commands.registerCommand("protein-viewer.activateFromFiles", (file_uri: vscode.Uri | undefined, selectedFiles: vscode.Uri[] | undefined) => {
-		console.log(file_uri);
-		console.log(selectedFiles);
 		const filesToOpen = getFileUrisToOpen(file_uri, selectedFiles, vscode.window.activeTextEditor?.document.uri);
-		if (filesToOpen.length === 0) {
-			vscode.window.showErrorMessage('No supported file selected to open in Protein Viewer.');
-			return;
-		}
 		ProteinViewerPanel.renderFromFiles(context.extensionUri, filesToOpen);
 	});
 
@@ -51,6 +45,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(ESMFold);
 }
 
+/**
+ * Returns file URIs in priority order: selected files, command URI, active editor URI, or an empty list.
+ */
 export function getFileUrisToOpen(fileUri: vscode.Uri | undefined, selectedFiles: readonly vscode.Uri[] | undefined, activeEditorUri: vscode.Uri | undefined): vscode.Uri[] {
 	if (selectedFiles?.length) {
 		return [...selectedFiles];
