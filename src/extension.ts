@@ -4,6 +4,7 @@ import fetch from 'node-fetch';
 import * as vscode from 'vscode';
 import { ProteinViewerPanel } from "./panels/ProteinViewerPanel";
 const path = require('node:path');
+const URI_SCHEME_PATTERN = /^[a-zA-Z][a-zA-Z0-9+.-]*:/;
 
 export async function activate(context: vscode.ExtensionContext) {
 
@@ -120,6 +121,6 @@ export function getFilesFromLaunchUri(uri: vscode.Uri): vscode.Uri[] {
 	const files = params.getAll("file")
 		.map(file => file.trim())
 		.filter(file => file.length > 0)
-		.map(file => file.match(/^[a-zA-Z][a-zA-Z0-9+.-]*:/) ? vscode.Uri.parse(file, true) : vscode.Uri.file(file));
+		.map(file => file.match(URI_SCHEME_PATTERN) ? vscode.Uri.parse(file, true) : vscode.Uri.file(file));
 	return files;
 }

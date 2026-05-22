@@ -33,10 +33,16 @@ You can also launch programmatically (for example from bash or Python) via a VS 
 
 The `file` query parameter can be repeated for multiple files.
 
-Example from bash:
+Example from bash (using Python for URL encoding):
 
 ```bash
-xdg-open "vscode://ArianJamasb.protein-viewer/open?file=$(python -c 'import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1]))' /abs/a.pdb)&file=$(python -c 'import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1]))' /abs/b.pdb)"
+python - <<'PY'
+import urllib.parse
+import webbrowser
+files = ["/abs/a.pdb", "/abs/b.cif"]
+query = "&".join(f"file={urllib.parse.quote(f)}" for f in files)
+webbrowser.open(f"vscode://ArianJamasb.protein-viewer/open?{query}")
+PY
 ```
 
 Example from Python:

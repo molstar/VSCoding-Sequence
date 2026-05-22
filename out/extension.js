@@ -7,6 +7,7 @@ const node_fetch_1 = require("node-fetch");
 const vscode = require("vscode");
 const ProteinViewerPanel_1 = require("./panels/ProteinViewerPanel");
 const path = require('node:path');
+const URI_SCHEME_PATTERN = /^[a-zA-Z][a-zA-Z0-9+.-]*:/;
 async function activate(context) {
     const helloCommand = vscode.commands.registerCommand("protein-viewer.start", () => {
         showInputBox().then((accession) => {
@@ -105,7 +106,7 @@ function getFilesFromLaunchUri(uri) {
     const files = params.getAll("file")
         .map(file => file.trim())
         .filter(file => file.length > 0)
-        .map(file => file.match(/^[a-zA-Z][a-zA-Z0-9+.-]*:/) ? vscode.Uri.parse(file, true) : vscode.Uri.file(file));
+        .map(file => file.match(URI_SCHEME_PATTERN) ? vscode.Uri.parse(file, true) : vscode.Uri.file(file));
     return files;
 }
 exports.getFilesFromLaunchUri = getFilesFromLaunchUri;
