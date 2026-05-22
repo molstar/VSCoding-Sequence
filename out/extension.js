@@ -15,9 +15,20 @@ async function activate(context) {
         });
     });
     const activateFromFiles = vscode.commands.registerCommand("protein-viewer.activateFromFiles", (file_uri, selectedFiles) => {
+        const filesToOpen = selectedFiles && selectedFiles.length > 0
+            ? selectedFiles
+            : file_uri
+                ? [file_uri]
+                : vscode.window.activeTextEditor
+                    ? [vscode.window.activeTextEditor.document.uri]
+                    : [];
+        if (filesToOpen.length === 0) {
+            void vscode.window.showErrorMessage("No structure file selected or active.");
+            return;
+        }
         console.log(file_uri);
         console.log(selectedFiles);
-        ProteinViewerPanel_1.ProteinViewerPanel.renderFromFiles(context.extensionUri, selectedFiles);
+        ProteinViewerPanel_1.ProteinViewerPanel.renderFromFiles(context.extensionUri, filesToOpen);
     });
     const activateFromFolder = vscode.commands.registerCommand("protein-viewer.activateFromFolder", (folder_uri) => {
         vscode.workspace.findFiles(`${vscode.workspace.asRelativePath(folder_uri)}/*.pdb`).then((files_uri) => {
