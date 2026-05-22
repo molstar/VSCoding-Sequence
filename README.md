@@ -104,7 +104,7 @@ As you interact with the structure using the mouse, Mol* contains two modes for 
 * The extension can be downloaded/installed from the [VSCode marketplace](https://marketplace.visualstudio.com/items?itemName=ArianJamasb.protein-viewer)
 * The extension can also be installed from [Open VSX](https://open-vsx.org/extension/ArianJamasb/protein-viewer) (e.g. code-server, VSCodium, Gitpod)
 
-* Altenatively, enter `⌘ + ⇧ + x` in VSCode and search for `Protein Viewer`
+* Alternatively, enter `⌘ + ⇧ + x` in VSCode and search for `Protein Viewer`
 
 ## 📬 Community
 
