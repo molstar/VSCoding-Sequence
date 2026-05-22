@@ -28,8 +28,6 @@ export async function activate(context: vscode.ExtensionContext) {
 			return;
 		}
 
-		console.log(file_uri);
-		console.log(selectedFiles);
 		ProteinViewerPanel.renderFromFiles(context.extensionUri, filesToOpen);
 	});
 

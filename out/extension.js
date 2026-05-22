@@ -26,8 +26,6 @@ async function activate(context) {
             void vscode.window.showErrorMessage("No structure file selected or active.");
             return;
         }
-        console.log(file_uri);
-        console.log(selectedFiles);
         ProteinViewerPanel_1.ProteinViewerPanel.renderFromFiles(context.extensionUri, filesToOpen);
     });
     const activateFromFolder = vscode.commands.registerCommand("protein-viewer.activateFromFolder", (folder_uri) => {
