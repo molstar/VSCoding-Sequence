@@ -32,7 +32,11 @@ export class ProteinViewerPanel {
     ProteinViewerPanel.currentPanel = new ProteinViewerPanel(panel, extensionUri, loadCommand, undefined);
   }
 
-  public static renderFromFiles(extensionUri: vscode.Uri, clickedFiles: vscode.Uri[]) {
+  public static renderFromFiles(extensionUri: vscode.Uri, clickedFiles: readonly vscode.Uri[] | undefined) {
+    if (!clickedFiles?.length) {
+      vscode.window.showErrorMessage('No supported file selected to open in Protein Viewer.');
+      return;
+    }
     const fnames = clickedFiles.map((clickedFile) => clickedFile.path.split('/').pop());
     const windowName = "Protein Viewer - " + fnames.join(" - ");
     const panel = vscode.window.createWebviewPanel("proteinviewer", windowName, vscode.ViewColumn.One, {
@@ -40,7 +44,7 @@ export class ProteinViewerPanel {
       retainContextWhenHidden: true
     });
 
-    ProteinViewerPanel.currentPanel = new ProteinViewerPanel(panel, extensionUri, undefined, clickedFiles);
+    ProteinViewerPanel.currentPanel = new ProteinViewerPanel(panel, extensionUri, undefined, [...clickedFiles]);
   }
 
   public dispose() {

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.activate = void 0;
+exports.getFileUrisToOpen = exports.activate = void 0;
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const node_fetch_1 = require("node-fetch");
@@ -17,7 +17,12 @@ async function activate(context) {
     const activateFromFiles = vscode.commands.registerCommand("protein-viewer.activateFromFiles", (file_uri, selectedFiles) => {
         console.log(file_uri);
         console.log(selectedFiles);
-        ProteinViewerPanel_1.ProteinViewerPanel.renderFromFiles(context.extensionUri, selectedFiles);
+        const filesToOpen = getFileUrisToOpen(file_uri, selectedFiles, vscode.window.activeTextEditor?.document.uri);
+        if (filesToOpen.length === 0) {
+            vscode.window.showErrorMessage('No supported file selected to open in Protein Viewer.');
+            return;
+        }
+        ProteinViewerPanel_1.ProteinViewerPanel.renderFromFiles(context.extensionUri, filesToOpen);
     });
     const activateFromFolder = vscode.commands.registerCommand("protein-viewer.activateFromFolder", (folder_uri) => {
         vscode.workspace.findFiles(`${vscode.workspace.asRelativePath(folder_uri)}/*.pdb`).then((files_uri) => {
@@ -41,6 +46,19 @@ async function activate(context) {
     context.subscriptions.push(ESMFold);
 }
 exports.activate = activate;
+function getFileUrisToOpen(fileUri, selectedFiles, activeEditorUri) {
+    if (selectedFiles?.length) {
+        return [...selectedFiles];
+    }
+    if (fileUri) {
+        return [fileUri];
+    }
+    if (activeEditorUri) {
+        return [activeEditorUri];
+    }
+    return [];
+}
+exports.getFileUrisToOpen = getFileUrisToOpen;
 // this method is called when your extension is deactivated
 // export function deactivate() {}
 async function showInputBox() {
