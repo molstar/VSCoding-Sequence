@@ -3,6 +3,7 @@
 <img src="img/logo.png" alt="drawing" width="200"/>
 
 [![Version](https://vsmarketplacebadge.apphb.com/version/ArianJamasb.protein-viewer.svg?color=blue&style=?style=for-the-badge&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=ArianJamasb.protein-viewer)
+[![Open VSX Version](https://img.shields.io/open-vsx/v/ArianJamasb/protein-viewer)](https://open-vsx.org/extension/ArianJamasb/protein-viewer)
 [![vscode last updated](https://img.shields.io/visual-studio-marketplace/last-updated/ArianJamasb.protein-viewer)](https://marketplace.visualstudio.com/items?itemName=ArianJamasb.protein-viewer)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -101,8 +102,9 @@ As you interact with the structure using the mouse, Mol* contains two modes for 
 ## 🧲 Installation
 
 * The extension can be downloaded/installed from the [VSCode marketplace](https://marketplace.visualstudio.com/items?itemName=ArianJamasb.protein-viewer)
+* The extension can also be installed from [Open VSX](https://open-vsx.org/extension/ArianJamasb/protein-viewer) (e.g. code-server, VSCodium, Gitpod)
 
-* Altenatively, enter `⌘ + ⇧ + x` in VSCode and search for `Protein Viewer`
+* Alternatively, enter `⌘ + ⇧ + x` in VSCode and search for `Protein Viewer`
 
 ## 📬 Community
 
