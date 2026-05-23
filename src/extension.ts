@@ -14,10 +14,9 @@ export async function activate(context: vscode.ExtensionContext) {
 		});
 	});
 
-	const activateFromFiles = vscode.commands.registerCommand("protein-viewer.activateFromFiles", (file_uri: vscode.Uri, selectedFiles: vscode.Uri[]) => {
-		console.log(file_uri);
-		console.log(selectedFiles);
-		ProteinViewerPanel.renderFromFiles(context.extensionUri, selectedFiles);
+	const activateFromFiles = vscode.commands.registerCommand("protein-viewer.activateFromFiles", (file_uri: vscode.Uri | undefined, selectedFiles: vscode.Uri[] | undefined) => {
+		const filesToOpen = getFileUrisToOpen(file_uri, selectedFiles, vscode.window.activeTextEditor?.document.uri);
+		ProteinViewerPanel.renderFromFiles(context.extensionUri, filesToOpen);
 	});
 
 	const activateFromFolder = vscode.commands.registerCommand("protein-viewer.activateFromFolder", (folder_uri: vscode.Uri) => {
@@ -44,6 +43,22 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(activateFromFiles);
 	context.subscriptions.push(activateFromFolder);
 	context.subscriptions.push(ESMFold);
+}
+
+/**
+ * Returns file URIs in priority order: selected files, command URI, active editor URI, or an empty list.
+ */
+export function getFileUrisToOpen(fileUri: vscode.Uri | undefined, selectedFiles: readonly vscode.Uri[] | undefined, activeEditorUri: vscode.Uri | undefined): vscode.Uri[] {
+	if (selectedFiles?.length) {
+		return [...selectedFiles];
+	}
+	if (fileUri) {
+		return [fileUri];
+	}
+	if (activeEditorUri) {
+		return [activeEditorUri];
+	}
+	return [];
 }
 
 // this method is called when your extension is deactivated
