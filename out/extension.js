@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.activate = void 0;
+exports.getFilesFromLaunchUri = exports.activate = void 0;
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const node_fetch_1 = require("node-fetch");
 const vscode = require("vscode");
 const ProteinViewerPanel_1 = require("./panels/ProteinViewerPanel");
 const path = require('node:path');
+const URI_SCHEME_PATTERN = /^[a-zA-Z][a-zA-Z0-9+.-]*:/;
 async function activate(context) {
     const helloCommand = vscode.commands.registerCommand("protein-viewer.start", () => {
         showInputBox().then((accession) => {
@@ -17,7 +18,10 @@ async function activate(context) {
     const activateFromFiles = vscode.commands.registerCommand("protein-viewer.activateFromFiles", (file_uri, selectedFiles) => {
         console.log(file_uri);
         console.log(selectedFiles);
-        ProteinViewerPanel_1.ProteinViewerPanel.renderFromFiles(context.extensionUri, selectedFiles);
+        const filesToOpen = selectedFiles?.length ? selectedFiles : (file_uri ? [file_uri] : []);
+        if (filesToOpen.length > 0) {
+            ProteinViewerPanel_1.ProteinViewerPanel.renderFromFiles(context.extensionUri, filesToOpen);
+        }
     });
     const activateFromFolder = vscode.commands.registerCommand("protein-viewer.activateFromFolder", (folder_uri) => {
         vscode.workspace.findFiles(`${vscode.workspace.asRelativePath(folder_uri)}/*.pdb`).then((files_uri) => {
@@ -34,11 +38,22 @@ async function activate(context) {
             });
         });
     });
+    const uriHandler = vscode.window.registerUriHandler({
+        handleUri(uri) {
+            const filesToOpen = getFilesFromLaunchUri(uri);
+            if (filesToOpen.length === 0) {
+                vscode.window.showErrorMessage("Protein Viewer: no files were provided in URI. Use ?file=/abs/path/to/file.pdb (repeat file for multiple files).");
+                return;
+            }
+            ProteinViewerPanel_1.ProteinViewerPanel.renderFromFiles(context.extensionUri, filesToOpen);
+        }
+    });
     //context.subscriptions.push(...[helloCommand, activateFromFile]);
     context.subscriptions.push(helloCommand);
     context.subscriptions.push(activateFromFiles);
     context.subscriptions.push(activateFromFolder);
     context.subscriptions.push(ESMFold);
+    context.subscriptions.push(uriHandler);
 }
 exports.activate = activate;
 // this method is called when your extension is deactivated
@@ -83,4 +98,16 @@ async function getfold(sequence) {
     const body = await response.text();
     return body;
 }
+function getFilesFromLaunchUri(uri) {
+    if (uri.path !== "/open") {
+        return [];
+    }
+    const params = new URLSearchParams(uri.query);
+    const files = params.getAll("file")
+        .map(file => file.trim())
+        .filter(file => file.length > 0)
+        .map(file => file.match(URI_SCHEME_PATTERN) ? vscode.Uri.parse(file, true) : vscode.Uri.file(file));
+    return files;
+}
+exports.getFilesFromLaunchUri = getFilesFromLaunchUri;
 //# sourceMappingURL=extension.js.map
