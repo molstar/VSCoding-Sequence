@@ -2,6 +2,11 @@
 
 All notable changes to the "protein-viewer" extension will be documented in this file.
 
+### 0.1.2
+
+Adds the ability to launch a viewer from a selection of a trajectory and file.
+ESMfold is now interactive
+
 ### 0.1.0
 
 Adds support for folding sequences via ESMFold

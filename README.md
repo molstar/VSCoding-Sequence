@@ -46,6 +46,18 @@ Right-click on the file or selection of files in the file editor and select `Lau
 
 Right-click on the folder in the file explorer and select `Launch Protein Viewer from Folder`.
 
+### 📂 Loading a Local Trajectory
+
+![Local trajectory usage gif](img/local_traj.gif)
+
+Right-click on the file and trajectory in the file editor and select `Launch Protein Viewer from File(s)`
+
+**✅ Supported Formats**
+
+* `.xtc`
+* `.trr`
+* `.dcd`
+
 ## ⚙️ Usage
 
 *The below is taken from the [Mol\* viewer docs](https://molstar.org/viewer-docs/) which is based on the [RCSB PDB mol* documentation](https://www.rcsb.org/3d-view/molstar/help/getting-started) thanks to the generosity of [RCSB PDB](https://www.rcsb.org/) and Dr. Shuchismita Dutta.*
@@ -117,6 +129,11 @@ Need help? Please [open an issue](https://github.com/a-r-j/vscoding-sequence/iss
 Find me on twitter: [@arian_jamasb](https://twitter.com/arian_jamasb) or drop me an email: [arian@jamasb.io](mailto:arian@jamasb.io)
 
 ## 🌪️ Change log
+
+### 0.1.2
+
+Adds the ability to launch a viewer from a selection of a trajectory and file.
+ESMfold is now interactive
 
 ### 0.1.0
 

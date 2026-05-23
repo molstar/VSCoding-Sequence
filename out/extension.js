@@ -1,36 +1,54 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.activate = void 0;
+exports.activate = activate;
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const node_fetch_1 = require("node-fetch");
 const vscode = require("vscode");
 const ProteinViewerPanel_1 = require("./panels/ProteinViewerPanel");
-const path = require('node:path');
+const glob = require("glob");
 async function activate(context) {
-    const helloCommand = vscode.commands.registerCommand("protein-viewer.start", () => {
+    const helloCommand = vscode.commands.registerCommand('protein-viewer.start', () => {
         showInputBox().then((accession) => {
             console.log(accession);
             ProteinViewerPanel_1.ProteinViewerPanel.render(context.extensionUri, accession);
         });
     });
-    const activateFromFiles = vscode.commands.registerCommand("protein-viewer.activateFromFiles", (file_uri, selectedFiles) => {
+    const activateFromFiles = vscode.commands.registerCommand('protein-viewer.activateFromFiles', (file_uri, selectedFiles) => {
         console.log(file_uri);
         console.log(selectedFiles);
         ProteinViewerPanel_1.ProteinViewerPanel.renderFromFiles(context.extensionUri, selectedFiles);
     });
-    const activateFromFolder = vscode.commands.registerCommand("protein-viewer.activateFromFolder", (folder_uri) => {
-        vscode.workspace.findFiles(`${vscode.workspace.asRelativePath(folder_uri)}/*.pdb`).then((files_uri) => {
-            ProteinViewerPanel_1.ProteinViewerPanel.renderFromFiles(context.extensionUri, files_uri);
-        });
+    const activateFromFolder = vscode.commands.registerCommand('protein-viewer.activateFromFolder', (uri) => {
+        handleFolderActivation(context, uri);
     });
-    const ESMFold = vscode.commands.registerCommand("protein-viewer.ESMFold", () => {
+    const ESMFold = vscode.commands.registerCommand('protein-viewer.ESMFold', () => {
         showSequenceInputBox().then((sequence) => {
-            const uri = getfold(sequence).then((pdb) => {
+            if (!sequence) {
+                vscode.window.showErrorMessage('No sequence provided');
+                return;
+            }
+            vscode.window.showInformationMessage('Sending request to ESMFold...');
+            getfold(sequence).then((pdb) => {
+                if (!pdb) {
+                    vscode.window.showErrorMessage('No PDB structure received from ESMFold');
+                    return;
+                }
+                console.log('Received PDB structure of length:', pdb.length);
                 writeFoldToFile(pdb).then(async (file_uri) => {
-                    console.log(file_uri);
-                    ProteinViewerPanel_1.ProteinViewerPanel.renderFromFiles(context.extensionUri, [vscode.Uri.file(file_uri)]);
+                    console.log('File saved at:', file_uri);
+                    try {
+                        await ProteinViewerPanel_1.ProteinViewerPanel.renderFromFiles(context.extensionUri, [vscode.Uri.file(file_uri)]);
+                        vscode.window.showInformationMessage('Structure prediction complete!');
+                    }
+                    catch (error) {
+                        vscode.window.showErrorMessage(`Failed to render structure: ${error}`);
+                    }
+                }).catch(error => {
+                    vscode.window.showErrorMessage(`Failed to save file: ${error}`);
                 });
+            }).catch(error => {
+                vscode.window.showErrorMessage(`ESMFold API error: ${error}`);
             });
         });
     });
@@ -40,7 +58,6 @@ async function activate(context) {
     context.subscriptions.push(activateFromFolder);
     context.subscriptions.push(ESMFold);
 }
-exports.activate = activate;
 // this method is called when your extension is deactivated
 // export function deactivate() {}
 async function showInputBox() {
@@ -58,29 +75,77 @@ async function showSequenceInputBox() {
     return sequence;
 }
 async function writeFoldToFile(file_contents) {
-    const time = new Date().getTime();
-    const fname = "/esmfold_" + time.toString() + ".pdb";
-    const setting = vscode.Uri.parse("untitled:" + vscode.workspace.rootPath + fname);
-    await vscode.workspace.openTextDocument(setting).then((a) => {
-        vscode.window.showTextDocument(a, 1, false).then(e => {
-            e.edit(edit => {
-                edit.insert(new vscode.Position(0, 0), file_contents);
-                a.save();
-            });
+    try {
+        const time = new Date().getTime();
+        const fname = '/esmfold_' + time.toString() + '.pdb';
+        console.log('Creating file:', fname);
+        console.log('Content length:', file_contents.length);
+        const setting = vscode.Uri.parse('untitled:' + vscode.workspace.rootPath + fname);
+        const doc = await vscode.workspace.openTextDocument(setting);
+        const editor = await vscode.window.showTextDocument(doc, 1, false);
+        await editor.edit(edit => {
+            edit.insert(new vscode.Position(0, 0), file_contents);
         });
-    });
-    console.log("wrote to test file.");
-    console.log(setting);
-    return setting.fsPath;
+        await doc.save();
+        console.log('File saved successfully');
+        return setting.fsPath;
+    }
+    catch (error) {
+        console.error('Error saving file:', error);
+        throw error;
+    }
 }
 async function getfold(sequence) {
-    const url = "https://api.esmatlas.com/foldSequence/v1/pdb/";
-    console.log(sequence);
-    const response = await (0, node_fetch_1.default)(url, {
-        method: 'POST',
-        body: sequence,
-    });
-    const body = await response.text();
-    return body;
+    const url = 'https://api.esmatlas.com/foldSequence/v1/pdb/';
+    console.log('Sending sequence to ESMFold:', sequence);
+    try {
+        const response = await (0, node_fetch_1.default)(url, {
+            method: 'POST',
+            body: sequence,
+            headers: {
+                'Content-Type': 'text/plain'
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+        }
+        const body = await response.text();
+        console.log('Received response of length:', body.length);
+        return body;
+    }
+    catch (error) {
+        console.error('ESMFold API error:', error);
+        throw error;
+    }
+}
+// Update the function signature to accept context parameter
+async function handleFolderActivation(context, uri) {
+    // Define the file extensions we support
+    const supportedExtensions = [
+        '.pdb', '.pdb.gz', '.PDB',
+        '.mol2', '.MOL2',
+        '.sdf', '.SDF',
+        '.mmCIF', '.mmcif', '.MMCIF',
+        '.mol', '.MOL',
+        '.xyz', '.XYZ',
+        '.ent', '.ENT',
+        '.pdbqt', '.PDBQT',
+        '.cif', '.CIF', '.cif.gz',
+        '.mcif', '.MCIF',
+        '.gro', '.GRO',
+        '.dcd', '.xtc'
+    ];
+    // Create glob pattern for supported files
+    const pattern = `${uri.fsPath}/**/*@(${supportedExtensions.join('|')})`;
+    // Find all matching files in the folder
+    const files = glob.sync(pattern);
+    if (files.length === 0) {
+        vscode.window.showInformationMessage('No supported structure files found in folder');
+        return;
+    }
+    // Convert file paths to URIs
+    const fileUris = files.map(file => vscode.Uri.file(file));
+    // Now we have access to context.extensionUri
+    ProteinViewerPanel_1.ProteinViewerPanel.renderFromFiles(context.extensionUri, fileUris);
 }
 //# sourceMappingURL=extension.js.map

@@ -1,3 +1,8 @@
 *.vsix
 .DS_Store
 node_modules/
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/extensions.json
+.vscode-test/*

@@ -1,1 +1,0 @@
-export declare const compose_frag = "\nprecision highp float;\nprecision highp sampler2D;\n\nuniform sampler2D tColor;\nuniform vec2 uTexSize;\nuniform float uWeight;\n\nvoid main() {\n    vec2 coords = gl_FragCoord.xy / uTexSize;\n    gl_FragColor = texture2D(tColor, coords) * uWeight;\n}\n";

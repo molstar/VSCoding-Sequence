@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
+const os = require("os");
 const test_electron_1 = require("@vscode/test-electron");
 async function main() {
     try {
@@ -10,11 +11,28 @@ async function main() {
         // The path to test runner
         // Passed to --extensionTestsPath
         const extensionTestsPath = path.resolve(__dirname, './suite/index');
-        // Download VS Code, unzip it and run the integration test
-        await (0, test_electron_1.runTests)({ extensionDevelopmentPath, extensionTestsPath });
+        // Additional arguments for better debugging
+        const launchArgs = [
+            '--disable-extensions',
+            '--disable-gpu'
+        ];
+        // Detect platform and architecture
+        const platform = os.platform();
+        const arch = os.arch();
+        // Configure platform-specific settings
+        const testConfig = {
+            extensionDevelopmentPath,
+            extensionTestsPath,
+            version: '1.97.1',
+            platform: platform === 'darwin' && arch === 'arm64' ? 'darwin-arm64' : platform,
+            launchArgs,
+            arch: arch
+        };
+        console.log(`Running tests on ${platform} (${arch})`);
+        await (0, test_electron_1.runTests)(testConfig);
     }
     catch (err) {
-        console.error('Failed to run tests');
+        console.error('Failed to run tests:', err);
         process.exit(1);
     }
 }

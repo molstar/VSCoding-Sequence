@@ -1,1 +1,0 @@
-export declare const assign_marker_varying = "\n#if defined(dNeedsMarker)\n    #if defined(dMarkerType_instance)\n        vMarker = readFromTexture(tMarker, aInstance, uMarkerTexDim).a;\n    #elif defined(dMarkerType_groupInstance)\n        vMarker = readFromTexture(tMarker, aInstance * float(uGroupCount) + group, uMarkerTexDim).a;\n    #endif\n#endif\n";

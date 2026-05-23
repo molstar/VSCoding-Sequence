@@ -1,6 +1,0 @@
-/**
- * Copyright (c) 2021-2022 mol* contributors, licensed under MIT, See LICENSE file for more info.
- *
- * @author Alexander Rose <alexander.rose@weirdbyte.de>
- */
-export declare const accumulate_vert = "\nprecision highp float;\n\n#include common\n#include read_from_texture\n\nuniform int uGroupCount;\n\nattribute float aSample;\n#define SampleID int(aSample)\n\nattribute mat4 aTransform;\nattribute float aInstance;\n\nuniform vec2 uGeoTexDim;\nuniform sampler2D tPosition;\nuniform sampler2D tGroup;\n\nuniform vec2 uColorTexDim;\nuniform sampler2D tColor;\n\nvarying vec3 vPosition;\nvarying vec4 vColor;\n\nuniform vec3 uBboxSize;\nuniform vec3 uBboxMin;\nuniform float uResolution;\n\nvoid main() {\n    vec3 position = readFromTexture(tPosition, SampleID, uGeoTexDim).xyz;\n    float group = unpackRGBToInt(readFromTexture(tGroup, SampleID, uGeoTexDim).rgb);\n\n    position = (aTransform * vec4(position, 1.0)).xyz;\n    gl_PointSize = 7.0;\n    vPosition = (position - uBboxMin) / uResolution;\n    gl_Position = vec4(((position - uBboxMin) / uBboxSize) * 2.0 - 1.0, 1.0);\n\n    #if defined(dColorType_group)\n        vColor = readFromTexture(tColor, group, uColorTexDim);\n    #elif defined(dColorType_groupInstance)\n        vColor = readFromTexture(tColor, aInstance * float(uGroupCount) + group, uColorTexDim);\n    #endif\n}\n";
