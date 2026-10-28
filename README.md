@@ -28,6 +28,8 @@ Open the command palette (`⌘ + ⇧ + p`) and simply call the `Start Protein Vi
 
 Right-click on the file or selection of files in the file editor and select `Launch Protein Viewer from File(s)`
 
+You can also open a file in the editor from the integrated terminal (for example on a remote server) and then run `Launch Protein Viewer from File(s)` from the command palette to load the active file.
+
 **✅ Supported Formats**
 
 * `.pdb`

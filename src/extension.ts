@@ -14,10 +14,21 @@ export async function activate(context: vscode.ExtensionContext) {
 		});
 	});
 
-	const activateFromFiles = vscode.commands.registerCommand("protein-viewer.activateFromFiles", (file_uri: vscode.Uri, selectedFiles: vscode.Uri[]) => {
-		console.log(file_uri);
-		console.log(selectedFiles);
-		ProteinViewerPanel.renderFromFiles(context.extensionUri, selectedFiles);
+	const activateFromFiles = vscode.commands.registerCommand("protein-viewer.activateFromFiles", (file_uri: vscode.Uri | undefined, selectedFiles: vscode.Uri[] | undefined) => {
+		const filesToOpen = selectedFiles && selectedFiles.length > 0
+			? selectedFiles
+			: file_uri
+				? [file_uri]
+				: vscode.window.activeTextEditor
+					? [vscode.window.activeTextEditor.document.uri]
+					: [];
+
+		if (filesToOpen.length === 0) {
+			void vscode.window.showErrorMessage("No structure file selected or active.");
+			return;
+		}
+
+		ProteinViewerPanel.renderFromFiles(context.extensionUri, filesToOpen);
 	});
 
 	const activateFromFolder = vscode.commands.registerCommand("protein-viewer.activateFromFolder", (folder_uri: vscode.Uri) => {
