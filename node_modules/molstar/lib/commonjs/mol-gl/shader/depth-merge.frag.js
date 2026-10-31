@@ -1,4 +1,0 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.depthMerge_frag = void 0;
-exports.depthMerge_frag = "\nprecision highp float;\nprecision highp sampler2D;\n\nuniform sampler2D tDepthPrimitives;\nuniform sampler2D tDepthVolumes;\nuniform vec2 uTexSize;\n\n#include common\n\nfloat getDepth(const in vec2 coords, sampler2D tDepth) {\n    #ifdef dPackedDepth\n        return unpackRGBAToDepth(texture2D(tDepth, coords));\n    #else\n        return texture2D(tDepth, coords).r;\n    #endif\n}\n\nvoid main() {\n    vec2 coords = gl_FragCoord.xy / uTexSize;\n    float depth = min(getDepth(coords, tDepthPrimitives), getDepth(coords, tDepthVolumes));\n    gl_FragColor = packDepthToRGBA(depth);\n}\n";
