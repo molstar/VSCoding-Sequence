@@ -2,16 +2,17 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProteinViewerPanel = void 0;
 const vscode = require("vscode");
+const formats_1 = require("../formats");
 class ProteinViewerPanel {
     constructor(panel, extensionUri, accession, clickedFiles) {
         this._disposables = [];
         this._panel = panel;
-        this._panel.onDidDispose(this.dispose, null, this._disposables);
-        if (accession != undefined) {
+        this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
+        if (accession !== undefined) {
             this._panel.webview.html = this._getWebviewContent(panel.webview, extensionUri, accession);
         }
         ;
-        if (clickedFiles != undefined) {
+        if (clickedFiles !== undefined) {
             this._panel.webview.html = this._getWebviewContentForFiles(panel.webview, extensionUri, clickedFiles);
         }
         ;
@@ -22,12 +23,7 @@ class ProteinViewerPanel {
             enableScripts: true,
             retainContextWhenHidden: true
         });
-        if (accession?.length === 4) {
-            var loadCommand = `viewer.loadPdb('${accession}');`;
-        }
-        else {
-            var loadCommand = `viewer.loadAlphaFoldDb('${accession}');`;
-        }
+        const loadCommand = (0, formats_1.accessionLoadCommand)(accession ?? '');
         ProteinViewerPanel.currentPanel = new ProteinViewerPanel(panel, extensionUri, loadCommand, undefined);
     }
     static renderFromFiles(extensionUri, clickedFiles) {
@@ -131,30 +127,30 @@ class ProteinViewerPanel {
                 }).then(viewer => {
                     var snapshotId = getParam('snapshot-id', '[^&]+').trim();
                     if (snapshotId) viewer.setRemoteSnapshot(snapshotId);
-    
+
                     var snapshotUrl = getParam('snapshot-url', '[^&]+').trim();
                     var snapshotUrlType = getParam('snapshot-url-type', '[^&]+').toLowerCase().trim() || 'molj';
                     if (snapshotUrl && snapshotUrlType) viewer.loadSnapshotFromUrl(snapshotUrl, snapshotUrlType);
-    
+
                     var structureUrl = getParam('structure-url', '[^&]+').trim();
                     var structureUrlFormat = getParam('structure-url-format', '[a-z]+').toLowerCase().trim();
                     var structureUrlIsBinary = getParam('structure-url-is-binary', '[^&]+').trim() === '1';
                     if (structureUrl) viewer.loadStructureFromUrl(structureUrl, structureUrlFormat, structureUrlIsBinary);
-    
+
                     var pdb = getParam('pdb', '[^&]+').trim();
                     if (pdb) viewer.loadPdb(pdb);
-    
+
                     var pdbDev = getParam('pdb-dev', '[^&]+').trim();
                     if (pdbDev) viewer.loadPdbDev(pdbDev);
-    
+
                     var emdb = getParam('emdb', '[^&]+').trim();
                     if (emdb) viewer.loadEmdb(emdb);
-    
+
                     // var afdb = getParam('afdb', '[^&]+').trim();
-                    // if (afdb) 
+                    // if (afdb)
                     // viewer.loadAlphaFoldDb('${accession}');
                     ${accession};
-    
+
                     var modelArchive = getParam('model-archive', '[^&]+').trim();
                     if (modelArchive) viewer.loadModelArchive(modelArchive);
                 });
@@ -167,19 +163,7 @@ class ProteinViewerPanel {
     _getWebviewContentForFiles(webview, extensionUri, clickedFiles) {
         const cssUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'node_modules', 'molstar', 'build/viewer', 'molstar.css'));
         const jsUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, 'node_modules', 'molstar', 'build/viewer', 'molstar.js'));
-        const pdbContents = clickedFiles.map((clickedFile) => webview.asWebviewUri(clickedFile));
-        const extensions = clickedFiles.map((clickedFile) => clickedFile.path.split('.').pop());
-        let loadCommands = [];
-        for (let i = 0; i < pdbContents.length; i++) {
-            const pdbContent = pdbContents[i];
-            var extension = extensions[i];
-            console.log(extension);
-            if (extension === 'cif' || extension === 'mmCIF' || extension === 'CIF' || extension === 'MMCIF' || extension == '.mCIF' || extension == '.mcif') {
-                extension = 'mmcif';
-            }
-            console.log(extension);
-            loadCommands.push(`viewer.loadStructureFromUrl('${pdbContent}', format='${extension}');`);
-        }
+        const loadCommands = clickedFiles.map((file) => (0, formats_1.fileLoadCommand)(webview.asWebviewUri(file).toString(), file.path));
         // Tip: Install the es6-string-html VS Code extension to enable code highlighting below
         return /*html*/ `
     <!DOCTYPE html>
@@ -259,11 +243,11 @@ class ProteinViewerPanel {
                 }).then(viewer => {
                     var snapshotId = getParam('snapshot-id', '[^&]+').trim();
                     if (snapshotId) viewer.setRemoteSnapshot(snapshotId);
-    
+
                     var snapshotUrl = getParam('snapshot-url', '[^&]+').trim();
                     var snapshotUrlType = getParam('snapshot-url-type', '[^&]+').toLowerCase().trim() || 'molj';
                     if (snapshotUrl && snapshotUrlType) viewer.loadSnapshotFromUrl(snapshotUrl, snapshotUrlType);
-    
+
                     var structureUrl = getParam('structure-url', '[^&]+').trim();
                     var structureUrlFormat = getParam('structure-url-format', '[a-z]+').toLowerCase().trim();
                     var structureUrlIsBinary = getParam('structure-url-is-binary', '[^&]+').trim() === '1';
