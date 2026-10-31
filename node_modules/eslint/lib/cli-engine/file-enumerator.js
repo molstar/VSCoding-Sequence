@@ -122,7 +122,8 @@ function statSafeSync(filePath) {
     try {
         return fs.statSync(filePath);
     } catch (error) {
-        /* istanbul ignore next */
+
+        /* c8 ignore next */
         if (error.code !== "ENOENT") {
             throw error;
         }
@@ -141,7 +142,8 @@ function readdirSafeSync(directoryPath) {
     try {
         return fs.readdirSync(directoryPath, { withFileTypes: true });
     } catch (error) {
-        /* istanbul ignore next */
+
+        /* c8 ignore next */
         if (error.code !== "ENOENT") {
             throw error;
         }
@@ -215,8 +217,8 @@ class FileEnumerator {
         cwd = process.cwd(),
         configArrayFactory = new CascadingConfigArrayFactory({
             cwd,
-            eslintRecommendedPath: path.resolve(__dirname, "../../conf/eslint-recommended.js"),
-            eslintAllPath: path.resolve(__dirname, "../../conf/eslint-all.js")
+            getEslintRecommendedConfig: () => require("../../conf/eslint-recommended.js"),
+            getEslintAllConfig: () => require("../../conf/eslint-all.js")
         }),
         extensions = null,
         globInputPaths = true,

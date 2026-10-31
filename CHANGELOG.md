@@ -2,19 +2,29 @@
 
 All notable changes to the "protein-viewer" extension will be documented in this file.
 
+### 0.1.0
+
+Adds support for folding sequences via ESMFold
+Bumps Mol* to 3.23.0
+
 ### 0.0.8
+
 Adds support for Mol* 3.0.2 to enable viewing of AF2 structures.
 
 ### 0.0.7
+
 README fixes.
 
 ### 0.0.6
+
 Fixes README emoji shortcodes.
 
 ### 0.0.5
+
 * Adds ability to launch a viewer from a selection of multiple supported files.
 
 ## 0.0.4
+
 * Adds support to open folders from explorer
 
 ## 0.0.3
@@ -23,6 +33,7 @@ Fixes README emoji shortcodes.
 * Fixes issue that viewer would autorefresh and lose state when switching between views.
 
 Adds support for additional filetypes:
+
 * `.pdbqt`
 * `.mmcif`
 * `.gro`
@@ -30,6 +41,7 @@ Adds support for additional filetypes:
 * `.cif`
 
 Adds support for molecules:
+
 * `.mol`
 * `.mol2`
 * `.sdf`

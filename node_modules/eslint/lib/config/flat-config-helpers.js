@@ -20,7 +20,14 @@ function parseRuleId(ruleId) {
 
     // distinguish between core rules and plugin rules
     if (ruleId.includes("/")) {
-        pluginName = ruleId.slice(0, ruleId.lastIndexOf("/"));
+
+        // mimic scoped npm packages
+        if (ruleId.startsWith("@")) {
+            pluginName = ruleId.slice(0, ruleId.lastIndexOf("/"));
+        } else {
+            pluginName = ruleId.slice(0, ruleId.indexOf("/"));
+        }
+
         ruleName = ruleId.slice(pluginName.length + 1);
     } else {
         pluginName = "@";
@@ -47,6 +54,7 @@ function getRuleFromConfig(ruleId, config) {
     const plugin = config.plugins && config.plugins[pluginName];
     let rule = plugin && plugin.rules && plugin.rules[ruleName];
 
+
     // normalize function rules into objects
     if (rule && typeof rule === "function") {
         rule = {
@@ -57,11 +65,47 @@ function getRuleFromConfig(ruleId, config) {
     return rule;
 }
 
+/**
+ * Gets a complete options schema for a rule.
+ * @param {{create: Function, schema: (Array|null)}} rule A new-style rule object
+ * @returns {Object} JSON Schema for the rule's options.
+ */
+function getRuleOptionsSchema(rule) {
+
+    if (!rule) {
+        return null;
+    }
+
+    const schema = rule.schema || rule.meta && rule.meta.schema;
+
+    if (Array.isArray(schema)) {
+        if (schema.length) {
+            return {
+                type: "array",
+                items: schema,
+                minItems: 0,
+                maxItems: schema.length
+            };
+        }
+        return {
+            type: "array",
+            minItems: 0,
+            maxItems: 0
+        };
+
+    }
+
+    // Given a full schema, leave it alone
+    return schema || null;
+}
+
+
 //-----------------------------------------------------------------------------
 // Exports
 //-----------------------------------------------------------------------------
 
 module.exports = {
     parseRuleId,
-    getRuleFromConfig
+    getRuleFromConfig,
+    getRuleOptionsSchema
 };

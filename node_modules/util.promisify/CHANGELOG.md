@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.2](https://github.com/ljharb/util.promisify/compare/v1.1.1...v1.1.2) - 2023-04-20
+
+### Fixed
+
+- [Fix] avoid crashing with `--disable-proto=throw` [`#26`](https://github.com/ljharb/util.promisify/issues/26)
+
+### Commits
+
+- [actions] reuse common workflows [`2736cb6`](https://github.com/ljharb/util.promisify/commit/2736cb6c8ea7c1cfeca6ddc3c9cf1615aab9a1a8)
+- [meta] use `npmignore` to autogenerate an npmignore file [`0eb5abb`](https://github.com/ljharb/util.promisify/commit/0eb5abbe3d3e78fccd20c9f6cac665a7687b54b8)
+- [meta] reorganize package.json [`e610642`](https://github.com/ljharb/util.promisify/commit/e610642b27f1498a2114d970ce327b29cfd3bde6)
+- [Fix] proper error name [`727c30c`](https://github.com/ljharb/util.promisify/commit/727c30c330b829ee5946226f69b114fae9c761cf)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `@es-shims/api`, `aud`, `auto-changelog`, `safe-publish-latest`, `tape` [`ecc9281`](https://github.com/ljharb/util.promisify/commit/ecc9281821e111f04c3f57e5f28e01386721da30)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `auto-changelog`, `tape` [`91c385d`](https://github.com/ljharb/util.promisify/commit/91c385d7c500678ae87c9b022cc5003815b2bf89)
+- [actions] update rebase action [`c62f4bf`](https://github.com/ljharb/util.promisify/commit/c62f4bfac476b1cdf4836d2e554dca712e2552b8)
+- [Refactor] use `has-proto` [`e423ed0`](https://github.com/ljharb/util.promisify/commit/e423ed024de422aa75264f2cfd13a16455da2fc4)
+- [Dev Deps] update `@es-shims/api`, `ljharb/eslint-config`,` aud`, `tape` [`62717c1`](https://github.com/ljharb/util.promisify/commit/62717c13f97227771f0b72c3d0638976d04e472a)
+- [Refactor] use `safe-array-concat` [`d068529`](https://github.com/ljharb/util.promisify/commit/d068529b46fbff46960111dfe857d43734f3a0f1)
+- [Deps] update `define-properties`, `has-symbols`, `object.getownpropertydescriptors` [`bd8a7be`](https://github.com/ljharb/util.promisify/commit/bd8a7be795d349176a667a69755a6472facbb2af)
+- [Deps] update `call-bind`, `has-symbols`, `object.getownpropertydescriptors` [`7473409`](https://github.com/ljharb/util.promisify/commit/7473409dbc10974549a869c8bed8172342a40728)
+- [Deps] update `define-properties`, `object.getownpropertydescriptors` [`4f244be`](https://github.com/ljharb/util.promisify/commit/4f244beb8e8f51011f265bef0bb87e2a8972f320)
+
 ## [v1.1.1](https://github.com/ljharb/util.promisify/compare/v1.1.0...v1.1.1) - 2021-01-08
 
 ### Commits

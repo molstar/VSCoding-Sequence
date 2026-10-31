@@ -1,9 +1,0 @@
-/**
- * Copyright (c) 2019-2021 mol* contributors, licensed under MIT, See LICENSE file for more info.
- *
- * @author Ludovic Autin <ludovic.autin@gmail.com>
- * @author Alexander Rose <alexander.rose@weirdbyte.de>
- */
-import { Mat4 } from '../../mol-math/linear-algebra';
-import { NumberArray } from '../../mol-util/type-helpers';
-export declare function getMatFromResamplePoints(points: NumberArray, segmentLength: number, resample: boolean): Mat4[];

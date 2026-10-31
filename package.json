@@ -2,7 +2,7 @@
   "name": "protein-viewer",
   "displayName": "Protein Viewer",
   "description": "Visualise 3D biological structures in the editor",
-  "version": "0.0.9",
+  "version": "0.1.1",
   "publisher": "ArianJamasb",
   "author": {
     "name": "Arian Jamasb"
@@ -48,6 +48,7 @@
     "onCommand:protein-viewer.start",
     "onCommand:protein-viewer.activateFromFiles",
     "onCommand:protein-viewer.activateFromFolder",
+    "onCommand:protein-viewer.ESMFold",
     "onCommand:protein-viewer.viewCurrentPDB"
   ],
   "main": "./out/extension.js",
@@ -66,6 +67,10 @@
         "title": "Launch Protein Viewer from Folder"
       },
       {
+        "command": "protein-viewer.ESMFold",
+        "title": "ESMFold Sequence"
+      },
+      {
         "command": "protein-viewer.viewCurrentPDB",
         "title": "View structure in Protein Viewer"
       }
@@ -73,7 +78,7 @@
     "menus": {
       "explorer/context": [
         {
-          "when": "resourceExtname == .pdb || resourceExtname == .PDB || resourceExtname == .mol2 || resourceExtname == .MOL2 || resourceExtname == .sdf || resourceExtname == .SDF || resourceExtname == .mmCIF || resourceExtname == .mmcif || resourceExtname == .Mol || resourceExtname == .mol || resourceExtname == .MOL || resourceExtname == .xyz || resourceExtname == .XYZ || resourceExtname == .ent || resourceExtname == .ENT || resourceExtname == .pdbqt || resourceExtname == .PDBQT || resourceExtname == .cif || resourceExtname == .CIF || resourceExtname == .mcif || resourceExtname == .MCIF || resourceExtname == .gro || resourceExtname == .GRO",
+          "when": "resourceExtname == .pdb || resourceExtname == .pdb.gz || resourceExtname == .PDB || resourceExtname == .mol2 || resourceExtname == .MOL2 || resourceExtname == .sdf || resourceExtname == .SDF || resourceExtname == .mmCIF || resourceExtname == .mmcif || resourceExtname == .cif.gz || resourceExtname == .MMCIF || resourceExtname == .Mol || resourceExtname == .mol || resourceExtname == .MOL || resourceExtname == .xyz || resourceExtname == .XYZ || resourceExtname == .ent || resourceExtname == .ENT || resourceExtname == .pdbqt || resourceExtname == .PDBQT || resourceExtname == .cif || resourceExtname == .CIF || resourceExtname == .mcif || resourceExtname == .MCIF || resourceExtname == .gro || resourceExtname == .GRO",
           "command": "protein-viewer.activateFromFiles",
           "group": "navigation"
         },
@@ -89,25 +94,25 @@
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "pretest": "npm run compile && npm run lint",
+    "test": "vscode-test",
+    "test:coverage": "npm run pretest && vscode-test --coverage"
   },
   "devDependencies": {
-    "@types/glob": "^7.1.4",
     "@types/mocha": "^9.0.0",
-    "@types/node": "14.x",
-    "@types/vscode": "^1.62.0",
+    "@types/vscode": "^1.95.0",
     "@typescript-eslint/eslint-plugin": "^5.1.0",
     "@typescript-eslint/parser": "^5.1.0",
-    "@vscode/test-electron": "^1.6.2",
+    "@vscode/test-cli": "^0.0.15",
+    "@vscode/test-electron": "^3.1.0",
     "eslint": "^8.1.0",
-    "glob": "^7.1.7",
-    "mocha": "^9.1.3",
-    "typescript": "^4.4.4"
+    "typescript": "^5.4.5"
   },
   "dependencies": {
-    "molstar": "^3.0.2",
-    "vsce": "^2.6.5"
+    "molstar": "^4.8.0",
+    "node-fetch": "^2.6.1",
+    "vscode-uri": "^3.0.8",
+    "yarn": "^1.22.22"
   }
 }
