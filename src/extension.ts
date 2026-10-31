@@ -94,7 +94,15 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		});
 	});
-	context.subscriptions.push(helloCommand, activateFromFiles, activateFromFolder, ESMFold);
+
+	const viewCurrentPDB = vscode.commands.registerCommand("protein-viewer.viewCurrentPDB", () => {
+		const activeEditor = vscode.window.activeTextEditor?.document.uri;
+		if (activeEditor) {
+			ProteinViewerPanel.renderFromFiles(context.extensionUri, [activeEditor]);
+		}
+	});
+
+	context.subscriptions.push(helloCommand, activateFromFiles, activateFromFolder, ESMFold, viewCurrentPDB);
 }
 
 // this method is called when your extension is deactivated
