@@ -48,7 +48,8 @@
     "onCommand:protein-viewer.start",
     "onCommand:protein-viewer.activateFromFiles",
     "onCommand:protein-viewer.activateFromFolder",
-    "onCommand:protein-viewer.ESMFold"
+    "onCommand:protein-viewer.ESMFold",
+    "onCommand:protein-viewer.viewCurrentPDB"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -68,6 +69,10 @@
       {
         "command": "protein-viewer.ESMFold",
         "title": "ESMFold Sequence"
+      },
+      {
+        "command": "protein-viewer.viewCurrentPDB",
+        "title": "View structure in Protein Viewer"
       }
     ],
     "menus": {

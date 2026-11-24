@@ -24,7 +24,7 @@ suite('Extension', () => {
 
 	test('registers all contributed commands', async () => {
 		const commands = await vscode.commands.getCommands(true);
-		for (const id of ['start', 'activateFromFiles', 'activateFromFolder', 'ESMFold']) {
+		for (const id of ['start', 'activateFromFiles', 'activateFromFolder', 'ESMFold', 'viewCurrentPDB']) {
 			assert.ok(commands.includes(`protein-viewer.${id}`), `missing protein-viewer.${id}`);
 		}
 	});
@@ -56,6 +56,13 @@ suite('Extension', () => {
 		const html = panelHtml();
 		assert.match(html, /3eiy\.PDB", "pdb"/);
 		assert.match(html, /esmfold\.pdb", "pdb"/);
+	});
+
+	test('viewCurrentPDB opens the active editor file', async () => {
+		const file = vscode.Uri.file(path.join(testFiles, '3eiy.PDB'));
+		await vscode.window.showTextDocument(file);
+		await vscode.commands.executeCommand('protein-viewer.viewCurrentPDB');
+		assert.match(panelHtml(), /3eiy\.PDB", "pdb"/);
 	});
 
 	suite('start', () => {
